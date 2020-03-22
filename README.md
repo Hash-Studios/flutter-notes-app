@@ -1,16 +1,22 @@
-# multi_screen
+# Flutter-Notes-App
 
-A new Flutter project.
+A Flutter based notes application that can store notes. It has Dark mode support.
 
-## Getting Started
+## Sample Screenshots
 
-This project is a starting point for a Flutter application.
+- ![Home Page](examples/Screenshot_1584913660.png)
 
-A few resources to get you started if this is your first Flutter project:
+- ![Drawer](examples/Screenshot_1584913559.png)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- ![Home Page with some Notes](examples/Screenshot_1584913539.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- ![Home Page Dark Mode](examples/Screenshot_1584913565.png)
+
+- ![Create Note](examples/Screenshot_1584913553.png)
+
+- ![View Note](examples/Screenshot_1584913575.png)
+
+- ![View Note Dark Mode](examples/Screenshot_1584913567.png)
+
+## Usage
+Just download the app-release.apk from build\app\outputs\apk\release folder.

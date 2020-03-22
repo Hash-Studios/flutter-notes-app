@@ -3,22 +3,13 @@ import 'package:flutter/rendering.dart';
 import './theme_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 
 var notetitle = TextEditingController();
 var notebody = TextEditingController();
+
 Map<String, String> originalData = {
-  '1t': 'Notes 1',
-  '1b': 'Notes1Body',
-  '2t': 'Notes 2',
-  '2b': 'Notes2Body',
-  '3t': 'Notes 3',
-  '3b': 'Notes3Body',
-  '4t': 'Notes 4',
-  '4b': 'Notes4Body',
-  '5t': 'Notes 5',
-  '5b': 'Notes5Body',
 };
+Map<String, String> modifiedData = {};
 
 void main() {
   runApp(
@@ -35,6 +26,31 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  var isModified = false;
+  void reading() {
+    if (originalData ==
+        {
+          '1t': 'Notes 1',
+          '1b': 'Notes1Body',
+          '2t': 'Notes 2',
+          '2b': 'Notes2Body',
+          '3t': 'Notes 3',
+          '3b': 'Notes3Body',
+          '4t': 'Notes 4',
+          '4b': 'Notes4Body',
+          '5t': 'Notes 5',
+          '5b': 'Notes5Body',
+        }) {
+      setState(() {
+        isModified = false;
+      });
+    } else {
+      setState(() {
+        isModified = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<DynamicTheme>(context);
@@ -88,10 +104,13 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text("Notes"),
         ),
-        body: Body1(
-          1,
-          originalData,
-        ),
+        body: isModified
+            ? Body1(
+                1,
+                modifiedData,
+                reading,
+              )
+            : Body1(1, originalData, reading),
       ),
     );
   }
@@ -100,16 +119,19 @@ class _MyAppState extends State<MyApp> {
 class Body1 extends StatefulWidget {
   int isClicked;
   Map<String, String> notesMap;
-  Body1(this.isClicked, this.notesMap);
-  _Body1State createState() => _Body1State(this.isClicked, this.notesMap);
+  Function reading;
+  Body1(this.isClicked, this.notesMap, this.reading);
+  _Body1State createState() =>
+      _Body1State(this.isClicked, this.notesMap, this.reading);
 }
 
 class _Body1State extends State<Body1> {
   var isClicked1;
   var notesMap1;
+  Function reading;
   var currentNoteTitle;
   var currentNoteBody;
-  _Body1State(this.isClicked1, this.notesMap1);
+  _Body1State(this.isClicked1, this.notesMap1, this.reading);
   void setIsClicked(var valueIsClicked) {
     setState(
       () {
@@ -119,8 +141,8 @@ class _Body1State extends State<Body1> {
   }
 
   void showNote(var notekey, var notevalue) {
-      currentNoteTitle = notekey;
-      currentNoteBody = notevalue;
+    currentNoteTitle = notekey;
+    currentNoteBody = notevalue;
   }
 
   String getNoteTitle() {
@@ -132,14 +154,16 @@ class _Body1State extends State<Body1> {
   }
 
   void updateNotesMap(String noteTitle, String noteBody) {
-    setState(
-      () {
-        var l1 = ((notesMap1.length ~/ 2) + 1).toString();
-        print(l1);
-        notesMap1.addAll({l1 + 't': noteTitle, l1 + 'b': noteBody});
-        print(notesMap1);
-      },
-    );
+    // setState(
+    //   () {
+    var l1 = ((notesMap1.length ~/ 2) + 1).toString();
+    notesMap1.addAll({l1 + 't': noteTitle, l1 + 'b': noteBody});
+    originalData = notesMap1;
+    modifiedData = notesMap1;
+    reading();
+
+    // },
+    // );
   }
 
   Map getNotesMap() {
@@ -150,41 +174,16 @@ class _Body1State extends State<Body1> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        return isClicked1 == 1
-            ? Screen1(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-                func: setIsClicked,
-                func2: getNotesMap,
-                func3: showNote,
-                func4: updateNotesMap,
-                func5: getNoteTitle,
-                func6: getNoteBody,
-              )
-            : isClicked1 == 2
-                ? Screen2(
-                    width: constraints.maxWidth,
-                    height: constraints.maxHeight,
-                    func: setIsClicked,
-                    func2: updateNotesMap,
-                  )
-                : isClicked1 == 3
-                    ? Screen3(
-                        width: constraints.maxWidth,
-                        height: constraints.maxHeight,
-                        func: setIsClicked,
-                        func2: getNoteTitle,
-                        func3: getNoteBody,
-                      )
-                    : isClicked1 == 4
-                        ? Screen4(
-                            width: constraints.maxWidth,
-                            height: constraints.maxHeight,
-                            func: setIsClicked)
-                        : Screen5(
-                            width: constraints.maxWidth,
-                            height: constraints.maxHeight,
-                            func: setIsClicked);
+        return Screen1(
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          func: setIsClicked,
+          func2: getNotesMap,
+          func3: showNote,
+          func4: updateNotesMap,
+          func5: getNoteTitle,
+          func6: getNoteBody,
+        );
       },
     );
   }
@@ -247,26 +246,6 @@ class Screen3 extends StatefulWidget {
         func2: func2,
         func3: func3,
       );
-}
-
-class Screen4 extends StatefulWidget {
-  final double width;
-  final double height;
-  final Function func;
-  Screen4({this.width, this.height, this.func});
-  @override
-  _Screen4State createState() =>
-      _Screen4State(width4: width, height4: height, func4: func);
-}
-
-class Screen5 extends StatefulWidget {
-  final double width;
-  final double height;
-  final Function func;
-  Screen5({this.width, this.height, this.func});
-  @override
-  _Screen5State createState() =>
-      _Screen5State(width5: width, height5: height, func5: func);
 }
 
 class _Screen1State extends State<Screen1> {
@@ -482,8 +461,10 @@ class _Screen2State extends State<Screen2> {
                   func2(notetitle.text, notebody.text);
                   notetitle.text = '';
                   notebody.text = '';
-                  func1(1);
-                  Navigator.pop(context, true);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyApp()),
+                  );
                 },
               ),
               body: Container(
@@ -504,7 +485,7 @@ class _Screen2State extends State<Screen2> {
                           hintText: 'Enter title...'),
                     ),
                     Container(
-                      height: height2 - 387,
+                      height: height2 * 0.3,
                       child: TextField(
                         controller: notebody,
                         style: TextStyle(
@@ -538,12 +519,43 @@ class _Screen3State extends State<Screen3> {
     currentNotesT = func2();
     currentNotesB = func3();
   }
+  // Future<bool> _onBackPressed() {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Text(
+  //           'Do you want to go back?'),
+  //       actions: <Widget>[
+  //         FlatButton(
+  //           onPressed: () => Navigator.pop(context, false),
+  //           child: Text('No'),
+  //         ),
+  //         FlatButton(
+  //           onPressed: () {
+  //             Navigator.pop(context, true);
+  //           },
+  //           child: Text('Yes'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<DynamicTheme>(context);
     return MaterialApp(
       theme: themeProvider.getDarkMode() ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyApp()),
+            );
+          },
+        ),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -613,56 +625,6 @@ class _Screen3State extends State<Screen3> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Screen4State extends State<Screen4> {
-  double width4;
-  double height4;
-  Function func4;
-  _Screen4State({this.width4, this.height4, this.func4});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: ButtonTheme(
-        minWidth: width4 - 250,
-        height: height4 - 250,
-        child: RaisedButton(
-          onPressed: () {
-            HapticFeedback.vibrate();
-            setState(() {
-              func4();
-            });
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _Screen5State extends State<Screen5> {
-  double width5;
-  double height5;
-  Function func5;
-  _Screen5State({this.width5, this.height5, this.func5});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: ButtonTheme(
-        minWidth: width5 - 300,
-        height: height5 - 300,
-        child: RaisedButton(
-          onPressed: () {
-            HapticFeedback.vibrate();
-            setState(() {
-              func5();
-            });
-          },
         ),
       ),
     );
