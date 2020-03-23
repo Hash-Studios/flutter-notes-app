@@ -7,8 +7,7 @@ import 'package:provider/provider.dart';
 var notetitle = TextEditingController();
 var notebody = TextEditingController();
 
-Map<String, String> originalData = {
-};
+Map<String, String> originalData = {};
 Map<String, String> modifiedData = {};
 
 void main() {
@@ -166,6 +165,15 @@ class _Body1State extends State<Body1> {
     // );
   }
 
+  void delNotesMap(String noteTitle, String noteBody) {
+    notesMap1.removeWhere((k, v) => v == noteTitle);
+    notesMap1.removeWhere((k, v) => v == noteBody);
+    print(notesMap1);
+    originalData = notesMap1;
+    modifiedData = notesMap1;
+    reading();
+  }
+
   Map getNotesMap() {
     return notesMap1;
   }
@@ -183,6 +191,8 @@ class _Body1State extends State<Body1> {
           func4: updateNotesMap,
           func5: getNoteTitle,
           func6: getNoteBody,
+          func7: reading,
+          func8: delNotesMap,
         );
       },
     );
@@ -198,26 +208,34 @@ class Screen1 extends StatefulWidget {
   final Function func4;
   final Function func5;
   final Function func6;
+  final Function func7;
+  final Function func8;
 
-  Screen1(
-      {this.width,
-      this.height,
-      this.func,
-      this.func2,
-      this.func3,
-      this.func4,
-      this.func5,
-      this.func6});
+  Screen1({
+    this.width,
+    this.height,
+    this.func,
+    this.func2,
+    this.func3,
+    this.func4,
+    this.func5,
+    this.func6,
+    this.func7,
+    this.func8,
+  });
   @override
   _Screen1State createState() => _Screen1State(
-      width1: width,
-      height1: height,
-      func1: func,
-      func2: func2,
-      func3: func3,
-      func4: func4,
-      func5: func5,
-      func6: func6);
+        width1: width,
+        height1: height,
+        func1: func,
+        func2: func2,
+        func3: func3,
+        func4: func4,
+        func5: func5,
+        func6: func6,
+        func7: func7,
+        func8: func8,
+      );
 }
 
 class Screen2 extends StatefulWidget {
@@ -237,7 +255,9 @@ class Screen3 extends StatefulWidget {
   final Function func;
   final Function func2;
   final Function func3;
-  Screen3({this.width, this.height, this.func, this.func2, this.func3});
+  final Function func4;
+  Screen3(
+      {this.width, this.height, this.func, this.func2, this.func3, this.func4});
   @override
   _Screen3State createState() => _Screen3State(
         width3: width,
@@ -245,6 +265,7 @@ class Screen3 extends StatefulWidget {
         func: func,
         func2: func2,
         func3: func3,
+        func4: func4,
       );
 }
 
@@ -257,6 +278,8 @@ class _Screen1State extends State<Screen1> {
   Function func4;
   Function func5;
   Function func6;
+  Function func7;
+  Function func8;
   Map notes;
   List notestitle = [];
   List notesbody = [];
@@ -269,12 +292,18 @@ class _Screen1State extends State<Screen1> {
     this.func4,
     this.func5,
     this.func6,
+    this.func7,
+    this.func8,
   }) {
     notes = func2();
     for (var i = 1; i <= notes.length; i++) {
       notestitle.add(notes[i.toString() + 't']);
       notesbody.add(notes[i.toString() + 'b']);
     }
+    notestitle.removeWhere((value) => value == null);
+    notestitle.removeWhere((value) => value == '');
+    notesbody.removeWhere((value) => value == null);
+    notesbody.removeWhere((value) => value == '');
   }
 
   Future<bool> _onBackPressed() {
@@ -303,7 +332,7 @@ class _Screen1State extends State<Screen1> {
       child: Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
                 return Screen2(
                   width: width1,
                   height: height1,
@@ -324,38 +353,60 @@ class _Screen1State extends State<Screen1> {
             alignment: Alignment.topLeft,
             child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: ((notestitle.length + 1) ~/ 2),
+              itemCount: ((notestitle.length)),
               itemBuilder: (BuildContext context, int index) {
                 // String key1 = notestitle.keys.elementAt(index);
                 // String key2 = notesbody.keys.elementAt(index);
                 return new Column(
                   children: <Widget>[
-                    new ListTile(
-                      title: new Text('${notestitle[index].toString()}'),
-                      subtitle: new Text('${notesbody[index].toString()}'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              HapticFeedback.vibrate();
-                              func3('${notestitle[index].toString()}',
-                                  '${notesbody[index].toString()}');
-                              return Screen3(
-                                width: width1,
-                                height: height1,
-                                func: func1,
-                                func2: func5,
-                                func3: func6,
-                              );
-                            },
-                          ),
-                        );
-                      },
+                    Card(
+                      child: ListTile(
+                        leading: Icon(Icons.edit),
+                        title: new Text('${notestitle[index].toString()}'),
+                        subtitle: new Text('${notesbody[index].toString()}'),
+                        // trailing: Icon(
+                        //   Icons.more_vert,
+                        // ),
+                        onLongPress: () {
+                          HapticFeedback.vibrate();
+                          func8('${notestitle[index].toString()}',
+                              '${notesbody[index].toString()}');
+                          // setState(() {
+                          //   notestitle.removeAt(index);
+                          //   notesbody.removeAt(index);
+                          // });
+                          // notestitle[index] = '';
+                          // notesbody[index] = '';
+                          // func7();
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return MyApp();
+                          }));
+                        },
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                HapticFeedback.vibrate();
+                                func3('${notestitle[index].toString()}',
+                                    '${notesbody[index].toString()}');
+                                return Screen3(
+                                  width: width1,
+                                  height: height1,
+                                  func: func1,
+                                  func2: func5,
+                                  func3: func6,
+                                  func4: func7,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                    new Divider(
-                      height: 2.0,
-                    ),
+                    // new Divider(
+                    //   height: 2.0,
+                    // ),
                   ],
                 );
               },
@@ -461,8 +512,7 @@ class _Screen2State extends State<Screen2> {
                   func2(notetitle.text, notebody.text);
                   notetitle.text = '';
                   notebody.text = '';
-                  Navigator.push(
-                    context,
+                  Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => MyApp()),
                   );
                 },
@@ -512,10 +562,16 @@ class _Screen3State extends State<Screen3> {
   Function func;
   Function func2;
   Function func3;
+  Function func4;
   String currentNotesT;
   String currentNotesB;
   _Screen3State(
-      {this.width3, this.height3, this.func, this.func2, this.func3}) {
+      {this.width3,
+      this.height3,
+      this.func,
+      this.func2,
+      this.func3,
+      this.func4}) {
     currentNotesT = func2();
     currentNotesB = func3();
   }
@@ -546,84 +602,96 @@ class _Screen3State extends State<Screen3> {
     final themeProvider = Provider.of<DynamicTheme>(context);
     return MaterialApp(
       theme: themeProvider.getDarkMode() ? ThemeData.dark() : ThemeData.light(),
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyApp()),
-            );
-          },
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              DrawerHeader(
-                child: Image.network(
-                  'https://avatars2.githubusercontent.com/u/60510869?s=460&u=ea7872a9aa9189cfc2b0910a51e4b83d458709a3&v=4',
+      home: WillPopScope(
+        onWillPop: () {
+          return Future(() => false);
+        },
+        child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => MyApp()),
+              );
+            },
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  child: Image.network(
+                    'https://avatars2.githubusercontent.com/u/60510869?s=460&u=ea7872a9aa9189cfc2b0910a51e4b83d458709a3&v=4',
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        Colors.blue,
+                        Colors.cyanAccent[200],
+                      ],
+                    ),
+                  ),
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Colors.blue,
-                      Colors.cyanAccent[200],
+                ListTile(
+                  title: Center(
+                    child: Text('CodeNameAKshay'),
+                  ),
+                  onTap: () {},
+                ),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('Enable Dark Mode'),
+                      Switch(
+                        value: themeProvider.getDarkMode(),
+                        onChanged: (value) {
+                          setState(() {
+                            themeProvider.changeDarkMode(value);
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
-              ),
-              ListTile(
-                title: Center(
-                  child: Text('CodeNameAKshay'),
-                ),
-                onTap: () {},
-              ),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('Enable Dark Mode'),
-                    Switch(
-                      value: themeProvider.getDarkMode(),
-                      onChanged: (value) {
-                        setState(() {
-                          themeProvider.changeDarkMode(value);
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        appBar: AppBar(
-          title: Text("Notes"),
-        ),
-        body: Container(
-          alignment: Alignment.topCenter,
-          child: Column(
-            children: <Widget>[
-              Text(
-                currentNotesT,
-                style: TextStyle(
-                  fontFamily: 'Altasi',
-                  fontSize: 18.0000000000,
-                  fontWeight: FontWeight.bold,
-                ),
+          appBar: AppBar(
+            title: Text("Notes"),
+          ),
+          body: Container(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.all(width3 * 0.1),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    currentNotesT,
+                    style: TextStyle(
+                      fontFamily: 'Altasi',
+                      fontSize: 24.0000000000,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Divider(
+                    thickness: width3 * 0.01,
+                    height: 2.0,
+                  ),
+                  Text(
+                    currentNotesB,
+                    style: TextStyle(
+                      fontFamily: 'Altasi',
+                      fontSize: 18.0000000000,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                currentNotesB,
-                style: TextStyle(
-                  fontFamily: 'Altasi',
-                  fontSize: 20.0000000000,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
