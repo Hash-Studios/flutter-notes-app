@@ -9,11 +9,12 @@ class Note {
   DateTime dateCreated;
   DateTime dateLastEdited;
   Color noteColor;
-  int isArchived;
   List labels;
+  int isArchived;
+  
 
   Note(this.id, this.title, this.content, this.dateCreated, this.dateLastEdited,
-      this.noteColor, this.isArchived, this.labels);
+      this.noteColor, this.labels, this.isArchived);
 
   Map<String, dynamic> toMap(bool forUpdate) {
     var data = {

@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      // title: 'Flutter Demo',
       theme: ThemeData(
-        fontFamily: "Roboto",
+        // fontFamily: "Roboto",
         iconTheme: IconThemeData(color: Colors.black),
         primaryTextTheme: TextTheme(
           title: TextStyle(color: Colors.black),
@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MainPage(),
-
     );
   }
 }

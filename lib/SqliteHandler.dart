@@ -12,10 +12,10 @@ class NotesDBHandler {
     "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
     "title": "BLOB",
     "content": "BLOB",
-    "date_created": "INTEGER",
-    "date_last_edited": "INTEGER",
-    "note_color": "INTEGER",
-    "is_archived": "INTEGER",
+    "dateCreated": "INTEGER",
+    "dateLastEdited": "INTEGER",
+    "noteColor": "INTEGER",
+    "isArchived": "INTEGER",
     "labels": "BLOB"
   };
 
@@ -32,6 +32,7 @@ class NotesDBHandler {
   initDB() async {
     var path = await getDatabasesPath();
     var dbPath = join(path, 'notes.db');
+    print(dbPath);
     Database dbConnection = await openDatabase(
         dbPath, version: 1, onCreate: (Database db, int version) async {
       print("executing create query from onCreate callback");
@@ -76,8 +77,8 @@ class NotesDBHandler {
     );
 
     if (isNew) {
-      var one = await db.query("notes", orderBy: "date_last_edited desc",
-          where: "is_archived = ?",
+      var one = await db.query("notes", orderBy: "dateLastEdited desc",
+          where: "isArchived = ?",
           whereArgs: [0],
           limit: 1);
       int latestId = one.first["id"] as int;
@@ -123,8 +124,8 @@ class NotesDBHandler {
 
   Future<List<Map<String,dynamic>>> selectAllNotes() async {
     final Database db = await database;
-    var data = await db.query("notes", orderBy: "date_last_edited desc",
-        where: "is_archived = ?",
+    var data = await db.query("notes", orderBy: "dateLastEdited desc",
+        where: "isArchived = ?",
         whereArgs: [0]);
 
     return data;

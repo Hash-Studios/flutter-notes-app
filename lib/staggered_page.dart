@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/SqliteHandler.dart';
+import 'package:multi_screen/utility.dart';
+import 'package:multi_screen/staggered_tile.dart';
+import 'package:multi_screen/main_page.dart';
 
 class StaggeredGridPage extends StatefulWidget {
   final notesViewType;
@@ -72,15 +75,15 @@ EdgeInsets _paddingForView(BuildContext context){
       _allNotesInQueryResult[i]["id"],
       _allNotesInQueryResult[i]["title"] == null ? "" : utf8.decode(_allNotesInQueryResult[i]["title"]),
       _allNotesInQueryResult[i]["content"] == null ? "" : utf8.decode(_allNotesInQueryResult[i]["content"]),
-     DateTime.fromMillisecondsSinceEpoch(_allNotesInQueryResult[i]["date_created"] * 1000),
-     DateTime.fromMillisecondsSinceEpoch(_allNotesInQueryResult[i]["date_last_edited"] * 1000),
-      Color(_allNotesInQueryResult[i]["note_color"] ))
+     DateTime.fromMillisecondsSinceEpoch(_allNotesInQueryResult[i]["dateCreated"] * 1000),
+     DateTime.fromMillisecondsSinceEpoch(_allNotesInQueryResult[i]["dateLastEdited"] * 1000),
+      Color(_allNotesInQueryResult[i]["noteColor"] ), [], 0)
   );
   }
 
   void retrieveAllNotesFromDatabase() {
   // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
-    var _testData = noteDB.testSelect();
+    var _testData = noteDB.selectAllNotes();
     _testData.then((value){
         setState(() {
           this._allNotesInQueryResult = value;
