@@ -11,6 +11,7 @@ class ColorSlider extends StatefulWidget {
 class _ColorSliderState extends State<ColorSlider> {
   final colors = [
     // Material Colors
+    Color(0xffffffff), // classic white
     Colors.amber,
     Colors.blue,
     Colors.blueGrey,
@@ -30,7 +31,6 @@ class _ColorSliderState extends State<ColorSlider> {
     Colors.red,
     Colors.teal,
 
-    Color(0xffffffff), // classic white
     Color(0xfff28b81), // light pink
     Color(0xfff7bd02), // yellow
     Color(0xfffbf476), // light yellow

@@ -77,6 +77,22 @@ class _NotePageState extends State<NotePage> {
           title: _pageTitle(),
         ),
         body: _body(context),
+        floatingActionButton: Container(
+          decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+              color: Colors.blueGrey.withOpacity(0.8),
+              blurRadius: 20,
+              spreadRadius: 0,
+              offset: Offset(0, 4))
+        ], borderRadius: BorderRadius.circular(100)),
+          child: FloatingActionButton(
+            onPressed: () {
+              _readyToPop();
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.check),
+          ),
+        ),
       ),
       onWillPop: _readyToPop,
     );
