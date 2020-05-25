@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_screen/main_page.dart';
 import 'package:flutter/rendering.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         // fontFamily: "Roboto",
         iconTheme: IconThemeData(color: Colors.blueGrey),
+        textTheme: GoogleFonts.montserratTextTheme(),
         primaryTextTheme: TextTheme(
           title: TextStyle(color: Colors.black),
         ),

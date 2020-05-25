@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_screen/staggered_page.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/note_page.dart';
@@ -30,7 +31,7 @@ class _MainPageState extends State<MainPage> {
         centerTitle: true,
         title: Text(
           "Notes",
-          style: TextStyle(color: Colors.blueGrey),
+          style: GoogleFonts.montserrat(color: Colors.blueGrey),
         ),
       ),
       floatingActionButton: Container(

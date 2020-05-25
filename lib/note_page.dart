@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/SqliteHandler.dart';
 import 'package:multi_screen/utility.dart';
@@ -79,12 +80,12 @@ class _NotePageState extends State<NotePage> {
         body: _body(context),
         floatingActionButton: Container(
           decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: Colors.blueGrey.withOpacity(0.8),
-              blurRadius: 20,
-              spreadRadius: 0,
-              offset: Offset(0, 4))
-        ], borderRadius: BorderRadius.circular(100)),
+            BoxShadow(
+                color: Colors.blueGrey.withOpacity(0.8),
+                blurRadius: 20,
+                spreadRadius: 0,
+                offset: Offset(0, 4))
+          ], borderRadius: BorderRadius.circular(100)),
           child: FloatingActionButton(
             onPressed: () {
               _readyToPop();
@@ -110,33 +111,55 @@ class _NotePageState extends State<NotePage> {
                 child: Container(
                   padding: EdgeInsets.all(5),
 //          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                  child: EditableText(
-                      onChanged: (str) => {updateNoteObject()},
-                      maxLines: null,
-                      controller: _titleController,
-                      focusNode: _titleFocus,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
-                      cursorColor: Colors.blue,
-                      backgroundCursorColor: Colors.blue),
+                  child: TextField(
+                    autofocus: false,
+                    decoration: InputDecoration(
+                        hintText: "Heading",
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                    onChanged: (str) => {updateNoteObject()},
+                    maxLines: null,
+                    controller: _titleController,
+                    focusNode: _titleFocus,
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600),
+                    cursorColor: Colors.blue,
+                    // backgroundCursorColor: Colors.blue
+                  ),
                 ),
               ),
               Divider(
-                color: CentralStation.borderColor,
+                color: Colors.black45,
               ),
               Flexible(
                   child: Container(
                       padding: EdgeInsets.all(5),
 //    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                      child: EditableText(
+                      child: TextField(
+                        autofocus: false,
+                        decoration: InputDecoration(
+                            hintText: "Body",
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
                         onChanged: (str) => {updateNoteObject()},
                         maxLines: 300, // line limit extendable later
                         controller: _contentController,
                         focusNode: _contentFocus,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                        backgroundCursorColor: Colors.red,
+                        style: GoogleFonts.montserrat(
+                          color: Colors.black,
+                          fontSize: 20,
+                        ),
+                        // backgroundCursorColor: Colors.red,
                         cursorColor: Colors.blue,
                       )))
             ],
@@ -149,7 +172,10 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _pageTitle() {
-    return Text(_editableNote.id == -1 ? "New Note" : "Edit Note");
+    return Text(
+      _editableNote.id == -1 ? "New Note" : "Edit Note",
+      style: GoogleFonts.montserrat(),
+    );
   }
 
   List<Widget> _archiveAction(BuildContext context) {

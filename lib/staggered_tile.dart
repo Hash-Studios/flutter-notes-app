@@ -100,13 +100,13 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     int charCount = _content.length + widget.note.title.length;
     double fontSize = 16;
     if (charCount > 110) {
-      fontSize = 10;
+      fontSize = 8;
     } else if (charCount > 80) {
-      fontSize = 12;
+      fontSize = 10;
     } else if (charCount > 50) {
-      fontSize = 14;
+      fontSize = 12;
     } else if (charCount > 20) {
-      fontSize = 16;
+      fontSize = 14;
     }
     return fontSize;
   }
