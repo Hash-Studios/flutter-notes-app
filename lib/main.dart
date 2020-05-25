@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:multi_screen/main_page.dart';
 import './theme_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ void main() {
   runApp(
     ChangeNotifierProvider<DynamicTheme>(
       create: (_) => DynamicTheme(),
-      child: MyApp(),
+      child: MainPage(),
     ),
   );
 }
