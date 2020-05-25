@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
       // title: 'Flutter Demo',
       theme: ThemeData(
         // fontFamily: "Roboto",
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.blueGrey),
         primaryTextTheme: TextTheme(
           title: TextStyle(color: Colors.black),
         ),
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
       home: MainPage(),
     );
