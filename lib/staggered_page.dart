@@ -77,7 +77,7 @@ EdgeInsets _paddingForView(BuildContext context){
       _allNotesInQueryResult[i]["content"] == null ? "" : utf8.decode(_allNotesInQueryResult[i]["content"]),
      DateTime.fromMillisecondsSinceEpoch(_allNotesInQueryResult[i]["dateCreated"] * 1000),
      DateTime.fromMillisecondsSinceEpoch(_allNotesInQueryResult[i]["dateLastEdited"] * 1000),
-      Color(_allNotesInQueryResult[i]["noteColor"] ), [], 0)
+      Color(_allNotesInQueryResult[i]["noteColor"] ), _allNotesInQueryResult[i]["labels"], _allNotesInQueryResult[i]["isArchived"])
   );
   }
 

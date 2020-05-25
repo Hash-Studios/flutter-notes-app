@@ -157,6 +157,18 @@ class _NotePageState extends State<NotePage> {
         padding: EdgeInsets.symmetric(horizontal: 12),
         child: InkWell(
           child: GestureDetector(
+            onTap: () => {_saveAndStartNewNote(context)},
+            child: Icon(
+              Icons.add,
+              color: CentralStation.fontColor,
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        child: InkWell(
+          child: GestureDetector(
             onTap: () => _archivePopup(context),
             child: Icon(
               Icons.archive,
@@ -177,18 +189,6 @@ class _NotePageState extends State<NotePage> {
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: InkWell(
-          child: GestureDetector(
-            onTap: () => {_saveAndStartNewNote(context)},
-            child: Icon(
-              Icons.add,
-              color: CentralStation.fontColor,
-            ),
-          ),
-        ),
-      )
     ];
     return actions;
   }
@@ -325,8 +325,8 @@ class _NotePageState extends State<NotePage> {
 
   void _saveAndStartNewNote(BuildContext context) {
     _persistenceTimer.cancel();
-    var emptyNote =
-        new Note(-1, "", "", DateTime.now(), DateTime.now(), Colors.white, [], 0);
+    var emptyNote = new Note(
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, [], 0);
     Navigator.of(context).pop();
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) => NotePage(emptyNote)));

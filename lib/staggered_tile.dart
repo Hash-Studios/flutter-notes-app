@@ -33,7 +33,10 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
             border: tileColor == Colors.white
                 ? Border.all(color: CentralStation.borderColor)
                 : null,
-            color: tileColor,
+            gradient: LinearGradient(colors: [
+              tileColor.withOpacity(0.5),
+              tileColor,
+            ], begin: Alignment.topLeft, end: Alignment.bottomRight,stops: [0.1,0.5]),
             borderRadius: BorderRadius.all(Radius.circular(8))),
         padding: EdgeInsets.all(12),
         child: constructChild(),
@@ -61,7 +64,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       );
       contentsOfTiles.add(
         Divider(
-          color: Colors.transparent,
+          color: widget.note.noteColor,
           height: 6,
         ),
       );
@@ -72,6 +75,20 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       style: TextStyle(fontSize: _fontSize),
       maxLines: 10,
       textScaleFactor: 1.5,
+    ));
+
+    contentsOfTiles.add(
+      Divider(
+        color: widget.note.noteColor,
+        height: 6,
+      ),
+    );
+    contentsOfTiles.add(Align(
+      alignment: Alignment.centerRight,
+      child: Text(
+        CentralStation.stringForDatetime(widget.note.dateLastEdited),
+        textAlign: TextAlign.right,
+      ),
     ));
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

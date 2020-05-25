@@ -77,8 +77,9 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
               SizedBox(
                 height: 44,
                 child: Center(
-                    child: Text(CentralStation.stringForDatetime(
-                        widget.dateLastEdited))),
+                    child: Text("Edited " +
+                        CentralStation.stringForDatetime(
+                            widget.dateLastEdited))),
               )
             ],
             mainAxisAlignment: MainAxisAlignment.center,
