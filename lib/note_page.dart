@@ -139,55 +139,27 @@ class _NotePageState extends State<NotePage> {
   List<Widget> _archiveAction(BuildContext context) {
     List<Widget> actions = [];
     if (widget.noteInEditing.id != -1) {
-      actions.add(Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: InkWell(
-          child: GestureDetector(
-            onTap: () => _undo(),
-            child: Icon(
-              Icons.undo,
-              color: CentralStation.fontColor,
-            ),
-          ),
-        ),
+      actions.add(IconButton(
+        icon: Icon(Icons.undo),
+        color: Colors.black45,
+        onPressed: () => _undo(),
       ));
     }
     actions += [
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: InkWell(
-          child: GestureDetector(
-            onTap: () => {_saveAndStartNewNote(context)},
-            child: Icon(
-              Icons.add,
-              color: CentralStation.fontColor,
-            ),
-          ),
-        ),
+      IconButton(
+        icon: Icon(Icons.add),
+        color: Colors.black45,
+        onPressed: () => {_saveAndStartNewNote(context)},
       ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: InkWell(
-          child: GestureDetector(
-            onTap: () => _archivePopup(context),
-            child: Icon(
-              Icons.archive,
-              color: CentralStation.fontColor,
-            ),
-          ),
-        ),
+      IconButton(
+        icon: Icon(Icons.archive),
+        color: Colors.black45,
+        onPressed: () => _archivePopup(context),
       ),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12),
-        child: InkWell(
-          child: GestureDetector(
-            onTap: () => bottomSheet(context),
-            child: Icon(
-              Icons.more_vert,
-              color: CentralStation.fontColor,
-            ),
-          ),
-        ),
+      IconButton(
+        icon: Icon(Icons.more_vert),
+        color: Colors.black45,
+        onPressed: () => bottomSheet(context),
       ),
     ];
     return actions;

@@ -34,9 +34,9 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
                 ? Border.all(color: CentralStation.borderColor)
                 : null,
             gradient: LinearGradient(colors: [
-              tileColor.withOpacity(0.5),
+              tileColor.withOpacity(0.6),
               tileColor,
-            ], begin: Alignment.topLeft, end: Alignment.bottomRight,stops: [0.1,0.5]),
+            ], begin: Alignment.topLeft, end: Alignment.bottomCenter,stops: [0.1,0.8]),
             borderRadius: BorderRadius.all(Radius.circular(8))),
         padding: EdgeInsets.all(12),
         child: constructChild(),
