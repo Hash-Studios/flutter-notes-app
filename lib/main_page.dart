@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_screen/staggered_page.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/note_page.dart';
 import 'package:multi_screen/utility.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum viewType { List, Staggered }
 
@@ -19,42 +21,99 @@ class _MainPageState extends State<MainPage> {
     notesViewType = viewType.Staggered;
   }
 
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: 720, height: 1440, allowFontScaling: true);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         brightness: Brightness.light,
         actions: _appBarActions(),
-        elevation: 1,
-        backgroundColor: Colors.white,
+        elevation: 0,
+        backgroundColor: Colors.amber,
         centerTitle: true,
         title: Text(
           "Notes",
-          style: GoogleFonts.montserrat(color: Colors.blueGrey),
+          style: GoogleFonts.montserrat(color: Colors.black),
         ),
       ),
       floatingActionButton: Container(
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-              color: Colors.blueGrey.withOpacity(0.8),
-              blurRadius: 20,
-              spreadRadius: 0,
-              offset: Offset(0, 4))
-        ], borderRadius: BorderRadius.circular(100)),
+        decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.black),
+            //   boxShadow: [
+            //   BoxShadow(
+            //       color: Colors.orange.withOpacity(0.8),
+            //       blurRadius: 20,
+            //       spreadRadius: 0,
+            //       offset: Offset(0, 4))
+            // ],
+            borderRadius: BorderRadius.circular(100)),
         child: FloatingActionButton.extended(
+          heroTag: 'FAB',
           elevation: 0,
           onPressed: () => _newNoteTapped(context),
           label: Text("CREATE"),
           icon: Icon(Icons.add),
         ),
       ),
-      body: SafeArea(
-        child: _body(),
-        right: true,
-        left: true,
-        top: true,
-        bottom: true,
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.black, width: 2),
+                right: BorderSide(color: Colors.black, width: 2),
+              ),
+            ),
+            height: 1440.h,
+            width: 604.5.w,
+            child: SafeArea(
+              child: _body(),
+              right: true,
+              left: true,
+              top: false,
+              bottom: false,
+            ),
+          ),
+          NavigationRail(
+              backgroundColor: Colors.amber,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              destinations: [
+                NavigationRailDestination(
+                  icon: Icon(Icons.favorite_border),
+                  selectedIcon: Icon(
+                    Icons.favorite,
+                    color: Colors.black,
+                  ),
+                  label: Text('First'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.bookmark_border),
+                  selectedIcon: Icon(
+                    Icons.book,
+                    color: Colors.black,
+                  ),
+                  label: Text('Second'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.star_border),
+                  selectedIcon: Icon(
+                    Icons.star,
+                    color: Colors.black,
+                  ),
+                  label: Text('Third'),
+                ),
+              ],
+              selectedIndex: _selectedIndex),
+        ],
       ),
       // bottomSheet: _bottomBar(),
     );
@@ -88,7 +147,7 @@ class _MainPageState extends State<MainPage> {
     var emptyNote = new Note(
         -1, "", "", DateTime.now(), DateTime.now(), Colors.white, [], 0);
     Navigator.push(
-        ctx, MaterialPageRoute(builder: (ctx) => NotePage(emptyNote)));
+        ctx, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
   }
 
   void _toggleViewType() {
@@ -107,7 +166,7 @@ class _MainPageState extends State<MainPage> {
       Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
           child: IconButton(
-            color: Colors.blueGrey,
+            color: Colors.black,
             icon: notesViewType == viewType.List
                 ? Icon(Icons.view_compact)
                 : Icon(Icons.view_agenda),

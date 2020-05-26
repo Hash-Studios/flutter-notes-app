@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:multi_screen/notes.dart';
@@ -30,13 +31,15 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       onTap: () => _noteTapped(context),
       child: Ink(
         decoration: BoxDecoration(
-            border: tileColor == Colors.white
-                ? Border.all(color: CentralStation.borderColor)
-                : null,
-            gradient: LinearGradient(colors: [
-              tileColor.withOpacity(0.6),
-              tileColor,
-            ], begin: Alignment.topLeft, end: Alignment.bottomCenter,stops: [0.1,0.8]),
+            border: Border.all(color: Colors.black, width: 2),
+            gradient: LinearGradient(
+                colors: [
+                  tileColor.withOpacity(0.6),
+                  tileColor,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomCenter,
+                stops: [0.1, 0.8]),
             borderRadius: BorderRadius.all(Radius.circular(8))),
         padding: EdgeInsets.all(12),
         child: constructChild(),
@@ -47,7 +50,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   void _noteTapped(BuildContext ctx) {
     CentralStation.updateNeeded = false;
     Navigator.push(
-        ctx, MaterialPageRoute(builder: (ctx) => NotePage(widget.note)));
+        ctx, CupertinoPageRoute(builder: (ctx) => NotePage(widget.note)));
   }
 
   Widget constructChild() {

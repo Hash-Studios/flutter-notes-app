@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_screen/notes.dart';
@@ -79,14 +80,19 @@ class _NotePageState extends State<NotePage> {
         ),
         body: _body(context),
         floatingActionButton: Container(
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-                color: Colors.blueGrey.withOpacity(0.8),
-                blurRadius: 20,
-                spreadRadius: 0,
-                offset: Offset(0, 4))
-          ], borderRadius: BorderRadius.circular(100)),
+          decoration: BoxDecoration(
+              border: Border.all(width: 2, color: Colors.black),
+              // boxShadow: [
+              //   BoxShadow(
+              //       color: Colors.orange.withOpacity(0.8),
+              //       blurRadius: 20,
+              //       spreadRadius: 0,
+              //       offset: Offset(0, 4))
+              // ],
+              borderRadius: BorderRadius.circular(100)),
           child: FloatingActionButton(
+            heroTag: 'FAB',
+            elevation: 0,
             onPressed: () {
               _readyToPop();
               Navigator.pop(context);
@@ -343,7 +349,7 @@ class _NotePageState extends State<NotePage> {
         -1, "", "", DateTime.now(), DateTime.now(), Colors.white, [], 0);
     Navigator.of(context).pop();
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => NotePage(emptyNote)));
+        context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
   }
 
   Future<bool> _readyToPop() async {

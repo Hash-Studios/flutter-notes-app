@@ -16,12 +16,12 @@ class MyApp extends StatelessWidget {
       // title: 'Flutter Demo',
       theme: ThemeData(
         // fontFamily: "Roboto",
-        iconTheme: IconThemeData(color: Colors.blueGrey),
+        iconTheme: IconThemeData(color: Colors.orange),
         textTheme: GoogleFonts.montserratTextTheme(),
         primaryTextTheme: TextTheme(
           title: TextStyle(color: Colors.black),
         ),
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.orange,
       ),
       home: MainPage(),
     );
