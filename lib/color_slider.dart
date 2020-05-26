@@ -14,7 +14,10 @@ class _ColorSliderState extends State<ColorSlider> {
     Color(0xffffffff), // classic white
     Colors.amber,
     Colors.blue,
+    Colors.teal,
+    Colors.deepOrange,
     Colors.blueGrey,
+    Colors.deepPurple,
     Colors.brown,
     Colors.cyan,
     Colors.deepOrange,
@@ -29,7 +32,6 @@ class _ColorSliderState extends State<ColorSlider> {
     Colors.pink,
     Colors.purple,
     Colors.red,
-    Colors.teal,
 
     Color(0xfff28b81), // light pink
     Color(0xfff7bd02), // yellow

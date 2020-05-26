@@ -61,7 +61,7 @@ class _NotePageState extends State<NotePage> {
   @override
   Widget build(BuildContext context) {
     if (_editableNote.id == -1 && _editableNote.title.isEmpty) {
-      FocusScope.of(context).requestFocus(_titleFocus);
+      // FocusScope.of(context).requestFocus(_titleFocus);
     }
 
     return WillPopScope(
