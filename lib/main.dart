@@ -23,7 +23,18 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.orange,
       ),
-      home: MainPage(),
+      home: ScrollConfiguration(
+        behavior: MyBehavior(),
+        child: MainPage(),
+      ),
     );
+  }
+}
+
+class MyBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }

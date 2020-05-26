@@ -71,12 +71,15 @@ class _MainPageState extends State<MainPage> {
             ),
             height: 1440.h,
             width: 604.5.w,
-            child: SafeArea(
-              child: _body(),
-              right: true,
-              left: true,
-              top: false,
-              bottom: false,
+            child: Container(
+              padding: EdgeInsets.only(top: 8),
+              child: SafeArea(
+                child: _body(),
+                right: true,
+                left: true,
+                top: true,
+                bottom: true,
+              ),
             ),
           ),
           NavigationRail(
