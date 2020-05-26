@@ -41,7 +41,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
                 end: Alignment.bottomCenter,
                 stops: [0.1, 0.8]),
             borderRadius: BorderRadius.all(Radius.circular(8))),
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.fromLTRB(0, 0, 0, 12),
         child: constructChild(),
       ),
     );
@@ -58,39 +58,62 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
 
     if (widget.note.title.length != 0) {
       contentsOfTiles.add(
-        AutoSizeText(
-          title,
-          style: TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold),
-          maxLines: widget.note.title.length == 0 ? 1 : 3,
-          textScaleFactor: 1.5,
+        Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.black, width: 2),
+            ),
+          ),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 6),
+            decoration: BoxDecoration(
+              color: Colors.white70,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(6), topRight: Radius.circular(6)),
+            ),
+            child: AutoSizeText(
+              title,
+              style:
+                  TextStyle(fontSize: _fontSize, fontWeight: FontWeight.bold),
+              maxLines: widget.note.title.length == 0 ? 1 : 3,
+              textScaleFactor: 1.5,
+            ),
+          ),
         ),
       );
-      contentsOfTiles.add(
-        Divider(
-          color: widget.note.noteColor,
-          height: 6,
-        ),
-      );
+      // contentsOfTiles.add(
+      //   Divider(
+      //     color: widget.note.noteColor,
+      //     height: 6,
+      //   ),
+      // );
     }
 
-    contentsOfTiles.add(AutoSizeText(
-      _content,
-      style: TextStyle(fontSize: _fontSize),
-      maxLines: 10,
-      textScaleFactor: 1.5,
+    contentsOfTiles.add(Padding(
+      padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+      child: AutoSizeText(
+        _content,
+        style: TextStyle(fontSize: _fontSize),
+        maxLines: 10,
+        textScaleFactor: 1.4,
+      ),
     ));
 
-    contentsOfTiles.add(
-      Divider(
-        color: widget.note.noteColor,
-        height: 6,
-      ),
-    );
-    contentsOfTiles.add(Align(
-      alignment: Alignment.centerRight,
-      child: Text(
-        CentralStation.stringForDatetime(widget.note.dateLastEdited),
-        textAlign: TextAlign.right,
+    // contentsOfTiles.add(
+    //   Divider(
+    //     color: widget.note.noteColor,
+    //     height: 6,
+    //   ),
+    // );
+    contentsOfTiles.add(Padding(
+      padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Text(
+          CentralStation.stringForDatetime(widget.note.dateLastEdited),
+          textAlign: TextAlign.right,
+        ),
       ),
     ));
     return Column(

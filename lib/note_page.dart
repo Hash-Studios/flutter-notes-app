@@ -75,10 +75,16 @@ class _NotePageState extends State<NotePage> {
           ),
           actions: _archiveAction(context),
           elevation: 1,
-          backgroundColor: noteColor,
+          backgroundColor: noteColor == Colors.white ? Colors.amber : noteColor,
           title: _pageTitle(),
         ),
-        body: _body(context),
+        body: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.black, width: 2),
+              ),
+            ),
+            child: _body(context)),
         floatingActionButton: Container(
           decoration: BoxDecoration(
               border: Border.all(width: 2, color: Colors.black),
