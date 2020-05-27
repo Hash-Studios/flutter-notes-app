@@ -37,16 +37,16 @@ class Note {
     return now.millisecondsSinceEpoch ~/ 1000;
   }
 
-  void archiveNote() {
-    isArchived = 1;
-  }
-  void starNote() {
-    isStarred = 1;
-  }
-  void unArchiveNote() {
-    isArchived = 0;
-  }
-  void unStarNote() {
-    isStarred = 0;
-  }
+  // void archiveNote() {
+  //   isArchived = 1;
+  // }
+  // void starNote() {
+  //   isStarred = 1;
+  // }
+  // void unArchiveNote() {
+  //   isArchived = 0;
+  // }
+  // void unStarNote() {
+  //   isStarred = 0;
+  // }
 }

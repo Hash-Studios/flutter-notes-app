@@ -100,6 +100,7 @@ class _NotePageState extends State<NotePage> {
             heroTag: 'FAB',
             elevation: 0,
             onPressed: () {
+              // CentralStation.updateNeeded = true;
               _readyToPop();
               Navigator.pop(context);
             },
@@ -201,14 +202,25 @@ class _NotePageState extends State<NotePage> {
     }
     actions += [
       IconButton(
-        icon: Icon(Icons.add),
+        icon: (_editableNote.isArchived == 0)
+            ? Icon(Icons.archive)
+            : Icon(Icons.archive),
         color: Colors.black45,
-        onPressed: () => _saveAndStartNewNote(context),
+        onPressed: () => _archivePopup(context),
       ),
+      // IconButton(
+      //   icon: Icon(Icons.add),
+      //   color: Colors.black45,
+      //   onPressed: () => _saveAndStartNewNote(context),
+      // ),
       IconButton(
-        icon: Icon(Icons.star),
+        icon: (_editableNote.isStarred == 0)
+            ? Icon(Icons.star_border)
+            : Icon(Icons.star),
         color: Colors.black45,
-        onPressed: () => _starPopup(context),
+        onPressed: () => (_editableNote.isStarred == 0)
+            ? _starThisNote(context)
+            : _unStarThisNote(context),
       ),
       IconButton(
         icon: Icon(Icons.more_vert),
@@ -271,7 +283,9 @@ class _NotePageState extends State<NotePage> {
       // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
       _editableNote.dateLastEdited = DateTime.now();
       print("Updating dateLastEdited");
-      CentralStation.updateNeeded = true;
+      setState(() {
+        CentralStation.updateNeeded = true;
+      });
     }
   }
 
@@ -287,11 +301,11 @@ class _NotePageState extends State<NotePage> {
           }
           break;
         }
-      case moreOptions.archive:
-        {
-          _archivePopup(context);
-        }
-        break;
+      // case moreOptions.archive:
+      //   {
+      //     _archivePopup(context);
+      //   }
+      //   break;
       case moreOptions.share:
         {
           if (_editableNote.content.isNotEmpty) {
@@ -366,7 +380,8 @@ class _NotePageState extends State<NotePage> {
   Future<bool> _readyToPop() async {
     _persistenceTimer.cancel();
     //show saved toast after calling _persistData function.
-
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Saved"), duration: Duration(milliseconds: 500)));
     _persistData();
     return true;
   }
@@ -480,25 +495,31 @@ class _NotePageState extends State<NotePage> {
     CentralStation.updateNeeded = true;
     _persistenceTimer.cancel(); // shutdown the timer
 
-    Navigator.of(context).pop(); // pop back to staggered view
+    // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of archive completion
-    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+    _globalKey.currentState.showSnackBar(new SnackBar(
+      content: Text("Archived"),
+      duration: Duration(milliseconds: 500),
+    ));
   }
 
   void _starThisNote(BuildContext context) {
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
     // set archived flag to true and send the entire note object in the database to be updated
-    _editableNote.isStarred = 1;
-    _editableNote.isArchived = 0;
+    setState(() {
+      _editableNote.isStarred = 1;
+      _editableNote.isArchived = 0;
+    });
     var noteDB = NotesDBHandler();
     noteDB.starNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
     _persistenceTimer.cancel(); // shutdown the timer
 
-    Navigator.of(context).pop(); // pop back to staggered view
+    // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of star completion
-    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Starred"), duration: Duration(milliseconds: 500)));
   }
 
   void _unArchiveThisNote(BuildContext context) {
@@ -511,24 +532,28 @@ class _NotePageState extends State<NotePage> {
     CentralStation.updateNeeded = true;
     _persistenceTimer.cancel(); // shutdown the timer
 
-    Navigator.of(context).pop(); // pop back to staggered view
+    // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of unarchive completion
-    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Unarchived"), duration: Duration(milliseconds: 500)));
   }
 
   void _unStarThisNote(BuildContext context) {
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
     // set archived flag to true and send the entire note object in the database to be updated
-    _editableNote.isStarred = 0;
+    setState(() {
+      _editableNote.isStarred = 0;
+    });
     var noteDB = NotesDBHandler();
     noteDB.starNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
     _persistenceTimer.cancel(); // shutdown the timer
 
-    Navigator.of(context).pop(); // pop back to staggered view
+    // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of unstar completion
-    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Unstarred"), duration: Duration(milliseconds: 500)));
   }
 
   void _copy() {
