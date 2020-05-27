@@ -9,7 +9,9 @@ import 'package:multi_screen/main_page.dart';
 
 class StaggeredGridPage extends StatefulWidget {
   final notesViewType;
-  const StaggeredGridPage({Key key, this.notesViewType}) : super(key: key);
+  final int selectedIndex;
+  const StaggeredGridPage({Key key, this.notesViewType, this.selectedIndex})
+      : super(key: key);
   @override
   _StaggeredGridPageState createState() => _StaggeredGridPageState();
 }
@@ -34,9 +36,21 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   @override
   Widget build(BuildContext context) {
     GlobalKey _stagKey = GlobalKey();
-    if (CentralStation.updateNeeded) {
-      retrieveAllNotesFromDatabase();
+
+    if (widget.selectedIndex == 0) {
+      if (CentralStation.updateNeeded) {
+        retrieveAllNotesFromDatabase();
+      }
+    } else if (widget.selectedIndex == 1) {
+      if (CentralStation.updateNeeded) {
+        retrieveStarredNotesFromDatabase();
+      }
+    } else if (widget.selectedIndex == 2) {
+      if (CentralStation.updateNeeded) {
+        retrieveArchivedNotesFromDatabase();
+      }
     }
+
     return Container(
         child: Padding(
       padding: _paddingForView(context),
@@ -46,7 +60,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
         mainAxisSpacing: 6,
         crossAxisCount: _colForStaggeredView(context),
         children: List.generate(_allNotesInQueryResult.length, (i) {
-          return _tileGenerator(i);
+          return _tileGenerator(i, widget.selectedIndex);
         }),
         staggeredTiles: _tilesForView(),
       ),
@@ -80,27 +94,51 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
     return EdgeInsets.only(left: padding, right: padding, top: 0, bottom: 0);
   }
 
-  MyStaggeredTile _tileGenerator(int i) {
-    return MyStaggeredTile(Note(
-        _allNotesInQueryResult[i]["id"],
-        _allNotesInQueryResult[i]["title"] == null
-            ? ""
-            : utf8.decode(_allNotesInQueryResult[i]["title"]),
-        _allNotesInQueryResult[i]["content"] == null
-            ? ""
-            : utf8.decode(_allNotesInQueryResult[i]["content"]),
-        DateTime.fromMillisecondsSinceEpoch(
-            _allNotesInQueryResult[i]["dateCreated"] * 1000),
-        DateTime.fromMillisecondsSinceEpoch(
-            _allNotesInQueryResult[i]["dateLastEdited"] * 1000),
-        Color(_allNotesInQueryResult[i]["noteColor"]),
-        _allNotesInQueryResult[i]["labels"],
-        _allNotesInQueryResult[i]["isArchived"]));
+  MyStaggeredTile _tileGenerator(int i, int selectedIndex) {
+    return MyStaggeredTile(
+        Note(
+            _allNotesInQueryResult[i]["id"],
+            _allNotesInQueryResult[i]["title"] == null
+                ? ""
+                : utf8.decode(_allNotesInQueryResult[i]["title"]),
+            _allNotesInQueryResult[i]["content"] == null
+                ? ""
+                : utf8.decode(_allNotesInQueryResult[i]["content"]),
+            DateTime.fromMillisecondsSinceEpoch(
+                _allNotesInQueryResult[i]["dateCreated"] * 1000),
+            DateTime.fromMillisecondsSinceEpoch(
+                _allNotesInQueryResult[i]["dateLastEdited"] * 1000),
+            Color(_allNotesInQueryResult[i]["noteColor"]),
+            _allNotesInQueryResult[i]["isStarred"],
+            _allNotesInQueryResult[i]["isArchived"]),
+        selectedIndex);
   }
 
   void retrieveAllNotesFromDatabase() {
     // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
     var _testData = noteDB.selectAllNotes();
+    _testData.then((value) {
+      setState(() {
+        this._allNotesInQueryResult = value;
+        CentralStation.updateNeeded = false;
+      });
+    });
+  }
+
+  void retrieveStarredNotesFromDatabase() {
+    // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
+    var _testData = noteDB.selectStarredNotes();
+    _testData.then((value) {
+      setState(() {
+        this._allNotesInQueryResult = value;
+        CentralStation.updateNeeded = false;
+      });
+    });
+  }
+
+  void retrieveArchivedNotesFromDatabase() {
+    // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
+    var _testData = noteDB.selectArchivedNotes();
     _testData.then((value) {
       setState(() {
         this._allNotesInQueryResult = value;

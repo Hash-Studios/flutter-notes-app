@@ -203,7 +203,12 @@ class _NotePageState extends State<NotePage> {
       IconButton(
         icon: Icon(Icons.add),
         color: Colors.black45,
-        onPressed: () => {_saveAndStartNewNote(context)},
+        onPressed: () => _saveAndStartNewNote(context),
+      ),
+      IconButton(
+        icon: Icon(Icons.star),
+        color: Colors.black45,
+        onPressed: () => _starPopup(context),
       ),
       IconButton(
         icon: Icon(Icons.archive),
@@ -352,7 +357,7 @@ class _NotePageState extends State<NotePage> {
   void _saveAndStartNewNote(BuildContext context) {
     _persistenceTimer.cancel();
     var emptyNote = new Note(
-        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, [], 0);
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
     Navigator.of(context).pop();
     Navigator.push(
         context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
@@ -379,7 +384,30 @@ class _NotePageState extends State<NotePage> {
                     onPressed: () => _archiveThisNote(context),
                     child: Text("Yes")),
                 FlatButton(
-                    onPressed: () => {Navigator.of(context).pop()},
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text("No"))
+              ],
+            );
+          });
+    } else {
+      _exitWithoutSaving(context);
+    }
+  }
+
+  void _starPopup(BuildContext context) {
+    if (_editableNote.id != -1) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Confirm ?"),
+              content: Text("This note will be starred"),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () => _starThisNote(context),
+                    child: Text("Yes")),
+                FlatButton(
+                    onPressed: () => Navigator.of(context).pop(),
                     child: Text("No"))
               ],
             );
@@ -406,14 +434,59 @@ class _NotePageState extends State<NotePage> {
     _persistenceTimer.cancel(); // shutdown the timer
 
     Navigator.of(context).pop(); // pop back to staggered view
-    // TODO: OPTIONAL show the toast of deletion completion
+    // TODO: OPTIONAL show the toast of archive completion
+    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+  }
+
+  void _starThisNote(BuildContext context) {
+    Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    _editableNote.isStarred = 1;
+    var noteDB = NotesDBHandler();
+    noteDB.starNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    _persistenceTimer.cancel(); // shutdown the timer
+
+    Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of star completion
+    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+  }
+
+  void _unArchiveThisNote(BuildContext context) {
+    Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    _editableNote.isArchived = 0;
+    var noteDB = NotesDBHandler();
+    noteDB.archiveNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    _persistenceTimer.cancel(); // shutdown the timer
+
+    Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of unarchive completion
+    Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
+  }
+
+  void _unStarThisNote(BuildContext context) {
+    Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    _editableNote.isStarred = 0;
+    var noteDB = NotesDBHandler();
+    noteDB.starNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    _persistenceTimer.cancel(); // shutdown the timer
+
+    Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of unstar completion
     Scaffold.of(context).showSnackBar(new SnackBar(content: Text("deleted")));
   }
 
   void _copy() {
     var noteDB = NotesDBHandler();
     Note copy = Note(-1, _editableNote.title, _editableNote.content,
-        DateTime.now(), DateTime.now(), _editableNote.noteColor, [], 0);
+        DateTime.now(), DateTime.now(), _editableNote.noteColor, 0, 0);
 
     var status = noteDB.copyNote(copy);
     status.then((query_success) {

@@ -9,12 +9,12 @@ class Note {
   DateTime dateCreated;
   DateTime dateLastEdited;
   Color noteColor;
-  List labels;
+  int isStarred;
   int isArchived;
   
 
   Note(this.id, this.title, this.content, this.dateCreated, this.dateLastEdited,
-      this.noteColor, this.labels, this.isArchived);
+      this.noteColor, this.isStarred, this.isArchived);
 
   Map<String, dynamic> toMap(bool forUpdate) {
     var data = {
@@ -24,7 +24,7 @@ class Note {
       'dateLastEdited': epochFromDate(dateLastEdited),
       'noteColor': noteColor.value,
       'isArchived': isArchived,
-      'labels': utf8.encode(labels.toString()),
+      'isStarred': isStarred,
     };
 
     if (forUpdate) {
@@ -39,5 +39,14 @@ class Note {
 
   void archiveNote() {
     isArchived = 1;
+  }
+  void starNote() {
+    isStarred = 1;
+  }
+  void unArchiveNote() {
+    isArchived = 0;
+  }
+  void unStarNote() {
+    isStarred = 0;
   }
 }

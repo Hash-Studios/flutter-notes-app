@@ -7,7 +7,8 @@ import 'package:multi_screen/note_page.dart';
 
 class MyStaggeredTile extends StatefulWidget {
   final Note note;
-  MyStaggeredTile(this.note);
+  final int selectedIndex;
+  MyStaggeredTile(this.note, this.selectedIndex);
   @override
   _MyStaggeredTileState createState() => _MyStaggeredTileState();
 }
@@ -17,7 +18,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   double _fontSize;
   Color tileColor;
   String title;
-  List labels;
+  int isStarred;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     _fontSize = _determineFontSizeForContent();
     tileColor = widget.note.noteColor;
     title = widget.note.title;
-    labels = widget.note.labels;
+    isStarred = widget.note.isStarred;
 
     return InkWell(
       onTap: () => _noteTapped(context),

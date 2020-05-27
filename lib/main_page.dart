@@ -87,6 +87,7 @@ class _MainPageState extends State<MainPage> {
               backgroundColor: Colors.amber,
               onDestinationSelected: (int index) {
                 setState(() {
+                  CentralStation.updateNeeded = true;
                   _selectedIndex = index;
                 });
               },
@@ -140,6 +141,7 @@ class _MainPageState extends State<MainPage> {
     return Container(
         child: StaggeredGridPage(
       notesViewType: notesViewType,
+      selectedIndex: _selectedIndex,
     ));
   }
 
@@ -161,7 +163,7 @@ class _MainPageState extends State<MainPage> {
   void _newNoteTapped(BuildContext ctx) {
     // "-1" id indicates the note is not new
     var emptyNote = new Note(
-        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, [], 0);
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
     Navigator.push(
         ctx, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
   }

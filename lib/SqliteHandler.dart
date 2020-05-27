@@ -16,14 +16,13 @@ class NotesDBHandler {
     "dateLastEdited": "INTEGER",
     "noteColor": "INTEGER",
     "isArchived": "INTEGER",
-    "labels": "BLOB"
+    "isStarred": "INTEGER"
   };
 
   static Database _database;
 
   Future<Database> get database async {
-    if (_database != null)
-      return _database;
+    if (_database != null) return _database;
 
     _database = await initDB();
     return _database;
@@ -33,8 +32,8 @@ class NotesDBHandler {
     var path = await getDatabasesPath();
     var dbPath = join(path, 'notes.db');
     print(dbPath);
-    Database dbConnection = await openDatabase(
-        dbPath, version: 1, onCreate: (Database db, int version) async {
+    Database dbConnection = await openDatabase(dbPath, version: 1,
+        onCreate: (Database db, int version) async {
       print("executing create query from onCreate callback");
       await db.execute(_buildCreateQuery());
     });
@@ -44,22 +43,19 @@ class NotesDBHandler {
     return dbConnection;
   }
 
-
   String _buildCreateQuery() {
     String query = "CREATE TABLE IF NOT EXISTS ";
     query += tableName;
     query += "(";
-    fieldMap.forEach((column, field){
+    fieldMap.forEach((column, field) {
       print("$column : $field");
       query += "$column $field,";
     });
 
-
-    query = query.substring(0, query.length-1);
+    query = query.substring(0, query.length - 1);
     query += " )";
 
-   return query;
-
+    return query;
   }
 
   static Future<String> dbPath() async {
@@ -71,13 +67,15 @@ class NotesDBHandler {
     final Database db = await database;
     print("insert called");
 
-    await db.insert('notes',
+    await db.insert(
+      'notes',
       isNew ? note.toMap(false) : note.toMap(true),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
     if (isNew) {
-      var one = await db.query("notes", orderBy: "dateLastEdited desc",
+      var one = await db.query("notes",
+          orderBy: "dateLastEdited desc",
           where: "isArchived = ?",
           whereArgs: [0],
           limit: 1);
@@ -90,8 +88,9 @@ class NotesDBHandler {
   Future<bool> copyNote(Note note) async {
     final Database db = await database;
     try {
-      await db.insert("notes",note.toMap(false), conflictAlgorithm: ConflictAlgorithm.replace);
-    } catch(Error) {
+      await db.insert("notes", note.toMap(false),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    } catch (Error) {
       print(Error);
       return false;
     }
@@ -104,29 +103,59 @@ class NotesDBHandler {
 
       int idToUpdate = note.id;
 
-      db.update("notes", note.toMap(true), where: "id = ?",
-          whereArgs: [idToUpdate]);
+      db.update("notes", note.toMap(true),
+          where: "id = ?", whereArgs: [idToUpdate]);
+    }
+  }
+
+  Future<bool> starNote(Note note) async {
+    if (note.id != -1) {
+      final Database db = await database;
+
+      int idToUpdate = note.id;
+
+      db.update("notes", note.toMap(true),
+          where: "id = ?", whereArgs: [idToUpdate]);
     }
   }
 
   Future<bool> deleteNote(Note note) async {
-    if(note.id != -1) {
+    if (note.id != -1) {
       final Database db = await database;
       try {
-        await db.delete("notes",where: "id = ?",whereArgs: [note.id]);
+        await db.delete("notes", where: "id = ?", whereArgs: [note.id]);
         return true;
-      } catch (Error){
+      } catch (Error) {
         print("Error deleting ${note.id}: ${Error.toString()}");
         return false;
       }
     }
   }
 
-  Future<List<Map<String,dynamic>>> selectAllNotes() async {
+  Future<List<Map<String, dynamic>>> selectAllNotes() async {
     final Database db = await database;
-    var data = await db.query("notes", orderBy: "dateLastEdited desc",
+    var data = await db.query(
+      "notes",
+      orderBy: "dateLastEdited desc",
+    );
+
+    return data;
+  }
+
+  Future<List<Map<String, dynamic>>> selectStarredNotes() async {
+    final Database db = await database;
+    var data = await db.query("notes",
+        orderBy: "dateLastEdited desc", where: "isStarred = ?", whereArgs: [1]);
+
+    return data;
+  }
+
+  Future<List<Map<String, dynamic>>> selectArchivedNotes() async {
+    final Database db = await database;
+    var data = await db.query("notes",
+        orderBy: "dateLastEdited desc",
         where: "isArchived = ?",
-        whereArgs: [0]);
+        whereArgs: [1]);
 
     return data;
   }
