@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_screen/color_slider.dart';
 import 'package:multi_screen/utility.dart';
 
-enum moreOptions { delete, share, copy }
+enum moreOptions { delete, archive, share, copy }
 
 class MoreOptionsSheet extends StatefulWidget {
   final Color color;
@@ -44,6 +44,13 @@ class _MoreOptionsSheetState extends State<MoreOptionsSheet> {
               onTap: () {
                 Navigator.of(context).pop();
                 widget.callBackOptionTapped(moreOptions.delete);
+              }),
+          new ListTile(
+              leading: new Icon(Icons.archive),
+              title: new Text('Archive'),
+              onTap: () {
+                Navigator.of(context).pop();
+                widget.callBackOptionTapped(moreOptions.archive);
               }),
           new ListTile(
               leading: new Icon(Icons.content_copy),

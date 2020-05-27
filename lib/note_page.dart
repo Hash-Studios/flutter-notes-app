@@ -211,11 +211,6 @@ class _NotePageState extends State<NotePage> {
         onPressed: () => _starPopup(context),
       ),
       IconButton(
-        icon: Icon(Icons.archive),
-        color: Colors.black45,
-        onPressed: () => _archivePopup(context),
-      ),
-      IconButton(
         icon: Icon(Icons.more_vert),
         color: Colors.black45,
         onPressed: () => bottomSheet(context),
@@ -292,6 +287,11 @@ class _NotePageState extends State<NotePage> {
           }
           break;
         }
+      case moreOptions.archive:
+        {
+          _archivePopup(context);
+        }
+        break;
       case moreOptions.share:
         {
           if (_editableNote.content.isNotEmpty) {
@@ -372,48 +372,94 @@ class _NotePageState extends State<NotePage> {
   }
 
   void _archivePopup(BuildContext context) {
-    if (_editableNote.id != -1) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Confirm ?"),
-              content: Text("This note will be archived"),
-              actions: <Widget>[
-                FlatButton(
-                    onPressed: () => _archiveThisNote(context),
-                    child: Text("Yes")),
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text("No"))
-              ],
-            );
-          });
+    if (_editableNote.isArchived == 0) {
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be archived"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _archiveThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
     } else {
-      _exitWithoutSaving(context);
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be unarchived"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _unArchiveThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
     }
   }
 
   void _starPopup(BuildContext context) {
-    if (_editableNote.id != -1) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Confirm ?"),
-              content: Text("This note will be starred"),
-              actions: <Widget>[
-                FlatButton(
-                    onPressed: () => _starThisNote(context),
-                    child: Text("Yes")),
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text("No"))
-              ],
-            );
-          });
+    if (_editableNote.isStarred == 0) {
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be starred"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _starThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
     } else {
-      _exitWithoutSaving(context);
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be unstarred"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _unStarThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
     }
   }
 
@@ -427,6 +473,7 @@ class _NotePageState extends State<NotePage> {
     Navigator.of(context).pop();
     // set archived flag to true and send the entire note object in the database to be updated
     _editableNote.isArchived = 1;
+    _editableNote.isStarred = 0;
     var noteDB = NotesDBHandler();
     noteDB.archiveNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
@@ -442,6 +489,7 @@ class _NotePageState extends State<NotePage> {
     Navigator.of(context).pop();
     // set archived flag to true and send the entire note object in the database to be updated
     _editableNote.isStarred = 1;
+    _editableNote.isArchived = 0;
     var noteDB = NotesDBHandler();
     noteDB.starNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
