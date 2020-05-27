@@ -33,7 +33,7 @@ class _MainPageState extends State<MainPage> {
         actions: _appBarActions(),
         elevation: 0,
         backgroundColor: Colors.amber,
-        centerTitle: true,
+        // centerTitle: true,
         title: Text(
           "Notes",
           style: GoogleFonts.montserrat(color: Colors.black),
@@ -83,6 +83,7 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           NavigationRail(
+              labelType: NavigationRailLabelType.selected,
               backgroundColor: Colors.amber,
               onDestinationSelected: (int index) {
                 setState(() {
@@ -91,20 +92,16 @@ class _MainPageState extends State<MainPage> {
               },
               destinations: [
                 NavigationRailDestination(
-                  icon: Icon(Icons.favorite_border),
+                  icon: Icon(Icons.insert_emoticon),
                   selectedIcon: Icon(
-                    Icons.favorite,
+                    Icons.note,
                     color: Colors.black,
                   ),
-                  label: Text('First'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.bookmark_border),
-                  selectedIcon: Icon(
-                    Icons.book,
-                    color: Colors.black,
+                  label: Text(
+                    'All',
+                    style: GoogleFonts.montserrat(
+                        fontSize: 12, color: Colors.black),
                   ),
-                  label: Text('Second'),
                 ),
                 NavigationRailDestination(
                   icon: Icon(Icons.star_border),
@@ -112,7 +109,23 @@ class _MainPageState extends State<MainPage> {
                     Icons.star,
                     color: Colors.black,
                   ),
-                  label: Text('Third'),
+                  label: Text(
+                    'Starred',
+                    style: GoogleFonts.montserrat(
+                        fontSize: 12, color: Colors.black),
+                  ),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.arrow_downward),
+                  selectedIcon: Icon(
+                    Icons.archive,
+                    color: Colors.black,
+                  ),
+                  label: Text(
+                    'Archived',
+                    style: GoogleFonts.montserrat(
+                        fontSize: 12, color: Colors.black),
+                  ),
                 ),
               ],
               selectedIndex: _selectedIndex),
