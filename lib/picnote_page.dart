@@ -13,16 +13,16 @@ import 'package:multi_screen/options_sheet.dart';
 import 'package:share/share.dart';
 import 'package:flutter/services.dart';
 
-class NotePage extends StatefulWidget {
+class PhotoPage extends StatefulWidget {
   final Note noteInEditing;
 
-  NotePage(this.noteInEditing);
+  PhotoPage(this.noteInEditing);
 
   @override
-  _NotePageState createState() => _NotePageState();
+  _PhotoPageState createState() => _PhotoPageState();
 }
 
-class _NotePageState extends State<NotePage> {
+class _PhotoPageState extends State<PhotoPage> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
   var noteColor;
@@ -30,7 +30,22 @@ class _NotePageState extends State<NotePage> {
   final _titleFocus = FocusNode();
   final _contentFocus = FocusNode();
 
+  File _image;
+  final picker = ImagePicker();
   List<Map<String, dynamic>> _allNotesInQueryResult = [];
+  bool _hasImages;
+
+  List<Widget> images;
+  List<String> imagePaths;
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) _image = File(pickedFile.path);
+      addImageToList(_image);
+      imagePaths.add(_image.path);
+    });
+  }
 
   String _titleFrominitial;
   String _contentFromInitial;
@@ -45,6 +60,8 @@ class _NotePageState extends State<NotePage> {
 
   @override
   void initState() {
+    images = new List();
+    imagePaths = new List();
     _editableNote = widget.noteInEditing;
     _titleController.text = _editableNote.title;
     _contentController.text = _editableNote.content;
@@ -53,6 +70,8 @@ class _NotePageState extends State<NotePage> {
 
     _titleFrominitial = widget.noteInEditing.title;
     _contentFromInitial = widget.noteInEditing.content;
+
+    _hasImages = false;
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
     }
@@ -62,8 +81,29 @@ class _NotePageState extends State<NotePage> {
       print("editable note id: ${_editableNote.id}");
       _persistData();
     });
+
+    if (!_isNewNote) {
+      var noteDB = NotesDBHandler();
+      var _testData = noteDB.selectAllImagesById(widget.noteInEditing.id);
+      _testData.then((value) {
+        setState(() {
+          this._allNotesInQueryResult = value;
+        });
+        showImagesAdded();
+      });
+    }
   }
 
+  void showImagesAdded() {
+    int len = _allNotesInQueryResult.length;
+    if (len > 0)
+      setState(() {
+        _hasImages = true;
+      });
+    for (int i = 0; i < len; i++) {
+      addImageToList(File((_allNotesInQueryResult[i]["imagePath"])));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +164,7 @@ class _NotePageState extends State<NotePage> {
     ScreenUtil.init(context, width: 720, height: 1440, allowFontScaling: true);
     return SingleChildScrollView(
       child: SizedBox(
-        height: 1290.h,
+        height: 1410.h,
         child: Column(
           children: [
             Container(
@@ -155,35 +195,35 @@ class _NotePageState extends State<NotePage> {
             Divider(
               color: Colors.black45,
             ),
-            Expanded(
-                child: Container(
-              // margin: EdgeInsets.only(
-              //   bottom: MediaQuery.of(context).viewInsets.bottom + 65,
-              // ),
-              padding: EdgeInsets.only(left: 0, right: 0, top: 12),
-              child: TextField(
-                autofocus: false,
-                decoration: InputDecoration(
-                    hintText: "Body",
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                onChanged: (str) => {updateNoteObject()},
-                maxLines: 99999,
-                // line limit extendable later
-                controller: _contentController,
-                focusNode: _contentFocus,
-                style: GoogleFonts.montserrat(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-                // backgroundCursorColor: Colors.red,
-                cursorColor: Colors.blue,
-              ),
-            ))
+            Visibility(
+                maintainState: false,
+                visible: _hasImages,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: images != null
+                              ? images
+                              : [
+                                  Container(
+                                    child: Text("No Images added"),
+                                  )
+                                ],
+                        ),
+                      ),
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Divider(
+                      color: Colors.black45,
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
@@ -250,11 +290,22 @@ class _NotePageState extends State<NotePage> {
         });
   }
 
+  void _saveImages() {
+    var noteDB = NotesDBHandler();
+    for (int i = 0; i < imagePaths.length; i++) {
+      print(imagePaths.elementAt(i));
+      noteDB.insertImage(Images(
+          widget.noteInEditing.id, imagePaths.elementAt(i))); // for new note
+    }
+  }
+
   void _persistData() {
     updateNoteObject();
 
-    if (_editableNote.content.isNotEmpty) {
+    if (_editableNote.content.isNotEmpty && images.isEmpty) {
       var noteDB = NotesDBHandler();
+
+      _saveImages();
 
       if (_editableNote.id == -1) {
         Future<int> autoIncrementedId =
@@ -343,6 +394,7 @@ class _NotePageState extends State<NotePage> {
                       Navigator.of(context).pop();
                       noteDB.deleteNote(_editableNote);
                       CentralStation.updateNeeded = true;
+                      _hasImages = false;
                       Navigator.of(context).pop();
                     },
                     child: Text("Yes")),
@@ -379,7 +431,7 @@ class _NotePageState extends State<NotePage> {
         -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
     Navigator.of(context).pop();
     Navigator.push(
-        context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
+        context, CupertinoPageRoute(builder: (ctx) => PhotoPage(emptyNote)));
   }
 
   Future<bool> _readyToPop() async {
@@ -424,6 +476,52 @@ class _NotePageState extends State<NotePage> {
                 actions: <Widget>[
                   FlatButton(
                       onPressed: () => _unArchiveThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
+    }
+  }
+
+  void _starPopup(BuildContext context) {
+    if (_editableNote.isStarred == 0) {
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be starred"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _starThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
+    } else {
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be unstarred"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _unStarThisNote(context),
                       child: Text("Yes")),
                   FlatButton(
                       onPressed: () => Navigator.of(context).pop(),
@@ -535,5 +633,33 @@ class _NotePageState extends State<NotePage> {
         _contentFromInitial; // widget.noteInEditing.content;
     _editableNote.dateLastEdited =
         _lastEditedForUndo; // widget.noteInEditing.dateLastEdited;
+  }
+
+  void addImageToList(File image) {
+    if (File == null) return;
+    setState(() {
+      _hasImages = true;
+      if (image != null)
+        images.add(Container(
+            height: 150,
+            width: 130,
+            child: image != null ? Image.file(image) : Text("Not Selected")));
+    });
+  }
+
+  List<Widget> _getBottomButtons() {
+    return [
+      Container(
+        width: 50,
+        margin: EdgeInsets.all(4),
+        child: RaisedButton(
+          color: Colors.yellow,
+          onPressed: () {
+            getImage();
+          },
+          child: Icon(Icons.image),
+        ),
+      ),
+    ];
   }
 }

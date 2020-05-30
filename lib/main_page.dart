@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multi_screen/picnote_page.dart';
 import 'package:multi_screen/staggered_page.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/note_page.dart';
@@ -89,7 +90,7 @@ class _MainPageState extends State<MainPage> {
                               bottomRight: Radius.circular(100))),
                       color: Colors.orange,
                       // elevation: 0,
-                      onPressed: () => _newNoteTapped(context),
+                      onPressed: () => _newPhotoNoteTapped(context),
                       child: Icon(Icons.photo, size: 28),
                     ),
                   ),
@@ -220,6 +221,13 @@ class _MainPageState extends State<MainPage> {
         -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
     Navigator.push(
         ctx, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
+  }
+   void _newPhotoNoteTapped(BuildContext ctx) {
+    // "-1" id indicates the note is not new
+    var emptyNote = new Note(
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
+    Navigator.push(
+        ctx, CupertinoPageRoute(builder: (ctx) => PhotoPage(emptyNote)));
   }
 
   void _toggleViewType() {
