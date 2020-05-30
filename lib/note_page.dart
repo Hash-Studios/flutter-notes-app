@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_screen/notes.dart';
@@ -112,7 +113,8 @@ class _NotePageState extends State<NotePage> {
 
     return WillPopScope(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        backgroundColor: noteColor,
+        // resizeToAvoidBottomInset: false,
         key: _globalKey,
         appBar: AppBar(
           brightness: Brightness.light,
@@ -123,6 +125,28 @@ class _NotePageState extends State<NotePage> {
           elevation: 1,
           backgroundColor: noteColor == Colors.white ? Colors.amber : noteColor,
           title: _pageTitle(),
+        ),
+        floatingActionButton: Container(
+          decoration: BoxDecoration(
+              border: Border.all(width: 2, color: Colors.black),
+              // boxShadow: [
+              //   BoxShadow(
+              //       color: Colors.orange.withOpacity(0.8),
+              //       blurRadius: 20,
+              //       spreadRadius: 0,
+              //       offset: Offset(0, 4))
+              // ],
+              borderRadius: BorderRadius.circular(100)),
+          child: FloatingActionButton(
+            heroTag: 'FAB',
+            elevation: 0,
+            onPressed: () {
+              // CentralStation.updateNeeded = true;
+              _readyToPop();
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.check),
+          ),
         ),
         body: Container(
             decoration: BoxDecoration(
@@ -137,9 +161,11 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _body(BuildContext ctx) {
-    return Stack(
-      children: [
-        Column(
+    ScreenUtil.init(context, width: 720, height: 1440, allowFontScaling: true);
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: 1410.h,
+        child: Column(
           children: [
             Container(
               padding: EdgeInsets.all(5),
@@ -153,7 +179,7 @@ class _NotePageState extends State<NotePage> {
                     enabledBorder: InputBorder.none,
                     errorBorder: InputBorder.none,
                     disabledBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                    contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
                 onChanged: (str) => {updateNoteObject()},
                 maxLines: null,
                 controller: _titleController,
@@ -184,10 +210,10 @@ class _NotePageState extends State<NotePage> {
                           children: images != null
                               ? images
                               : [
-                            Container(
-                              child: Text("No Images added"),
-                            )
-                          ],
+                                  Container(
+                                    child: Text("No Images added"),
+                                  )
+                                ],
                         ),
                       ),
                       height: MediaQuery.of(context).size.height * 0.15,
@@ -200,51 +226,36 @@ class _NotePageState extends State<NotePage> {
                 )),
             Expanded(
                 child: Container(
-                  margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 65,
-                  ),
-                  padding: EdgeInsets.only(left: 16, right: 16, top: 12),
-                  child: TextField(
-                    autofocus: false,
-                    decoration: InputDecoration(
-                        hintText: "Body",
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                    onChanged: (str) => {updateNoteObject()},
-                    maxLines: 99999,
-                    // line limit extendable later
-                    controller: _contentController,
-                    focusNode: _contentFocus,
-                    style: GoogleFonts.montserrat(
-                      color: Colors.black,
-                      fontSize: 20,
-                    ),
-                    // backgroundCursorColor: Colors.red,
-                    cursorColor: Colors.blue,
-                  ),
-                ))
+              margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 65,
+              ),
+              padding: EdgeInsets.only(left: 0, right: 0, top: 12),
+              child: TextField(
+                autofocus: false,
+                decoration: InputDecoration(
+                    hintText: "Body",
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
+                onChanged: (str) => {updateNoteObject()},
+                maxLines: 99999,
+                // line limit extendable later
+                controller: _contentController,
+                focusNode: _contentFocus,
+                style: GoogleFonts.montserrat(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+                // backgroundCursorColor: Colors.red,
+                cursorColor: Colors.blue,
+              ),
+            ))
           ],
         ),
-        Positioned(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 60,
-            child: Card(
-              elevation: 4,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: _getBottomButtons(),
-              ),
-            ),
-          ),
-        )
-      ],
+      ),
     );
   }
 
@@ -327,7 +338,7 @@ class _NotePageState extends State<NotePage> {
 
       if (_editableNote.id == -1) {
         Future<int> autoIncrementedId =
-        noteDB.insertNote(_editableNote, true); // for new note
+            noteDB.insertNote(_editableNote, true); // for new note
         // set the id of the note from the database after inserting the new note so for next persisting
         autoIncrementedId.then((value) {
           _editableNote.id = value;
@@ -352,7 +363,7 @@ class _NotePageState extends State<NotePage> {
     print("same content? ${_editableNote.content == _contentFromInitial}");
 
     if (!(_editableNote.title == _titleFrominitial &&
-        _editableNote.content == _contentFromInitial) ||
+            _editableNote.content == _contentFromInitial) ||
         (_isNewNote)) {
       // No changes to the note
       // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
@@ -376,11 +387,11 @@ class _NotePageState extends State<NotePage> {
           }
           break;
         }
-    // case moreOptions.archive:
-    //   {
-    //     _archivePopup(context);
-    //   }
-    //   break;
+      // case moreOptions.archive:
+      //   {
+      //     _archivePopup(context);
+      //   }
+      //   break;
       case moreOptions.share:
         {
           if (_editableNote.content.isNotEmpty) {
@@ -678,19 +689,6 @@ class _NotePageState extends State<NotePage> {
           child: Icon(Icons.image),
         ),
       ),
-      Container(
-        width: 50,
-        margin: EdgeInsets.all(4),
-        child: RaisedButton(
-          color: Colors.yellow,
-          onPressed: () {
-            // CentralStation.updateNeeded = true;
-            _readyToPop();
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.check),
-        ),
-      )
     ];
   }
 }

@@ -26,10 +26,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        width: MediaQuery.of(context).size.width * 1.8,
-        height: 1440,
-        allowFontScaling: true);
+    ScreenUtil.init(context, width: 720, height: 1440, allowFontScaling: true);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -66,74 +63,81 @@ class _MainPageState extends State<MainPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Colors.black, width: 2),
-                right: BorderSide(color: Colors.black, width: 2),
-              ),
-            ),
-            height: 1440.h,
-            width: 604.5.w,
+          Expanded(
+            flex: 9,
             child: Container(
-              padding: EdgeInsets.only(top: 8),
-              child: SafeArea(
-                child: _body(),
-                right: true,
-                left: true,
-                top: true,
-                bottom: true,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.black, width: 2),
+                  right: BorderSide(color: Colors.black, width: 2),
+                ),
+              ),
+              height: 1440.h,
+              // width: 604.5.w,
+              child: Container(
+                padding: EdgeInsets.only(top: 8),
+                child: SafeArea(
+                  child: _body(),
+                  right: true,
+                  left: true,
+                  top: true,
+                  bottom: true,
+                ),
               ),
             ),
           ),
-          NavigationRail(
-              labelType: NavigationRailLabelType.selected,
-              backgroundColor: Colors.amber,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  CentralStation.updateNeeded = true;
-                  _selectedIndex = index;
-                });
-              },
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.insert_emoticon),
-                  selectedIcon: Icon(
-                    Icons.note,
-                    color: Colors.black,
+          Expanded(
+            flex: 2,
+            child: NavigationRail(
+                unselectedIconTheme: IconThemeData(color: Colors.black54),
+                labelType: NavigationRailLabelType.selected,
+                backgroundColor: Colors.amber,
+                onDestinationSelected: (int index) {
+                  setState(() {
+                    CentralStation.updateNeeded = true;
+                    _selectedIndex = index;
+                  });
+                },
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.insert_emoticon),
+                    selectedIcon: Icon(
+                      Icons.note,
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      'All',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 12, color: Colors.black),
+                    ),
                   ),
-                  label: Text(
-                    'All',
-                    style: GoogleFonts.montserrat(
-                        fontSize: 12, color: Colors.black),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.star_border),
+                    selectedIcon: Icon(
+                      Icons.star,
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      'Starred',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 12, color: Colors.black),
+                    ),
                   ),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.star_border),
-                  selectedIcon: Icon(
-                    Icons.star,
-                    color: Colors.black,
+                  NavigationRailDestination(
+                    icon: Icon(Icons.arrow_downward),
+                    selectedIcon: Icon(
+                      Icons.archive,
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      'Archived',
+                      style: GoogleFonts.montserrat(
+                          fontSize: 12, color: Colors.black),
+                    ),
                   ),
-                  label: Text(
-                    'Starred',
-                    style: GoogleFonts.montserrat(
-                        fontSize: 12, color: Colors.black),
-                  ),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.arrow_downward),
-                  selectedIcon: Icon(
-                    Icons.archive,
-                    color: Colors.black,
-                  ),
-                  label: Text(
-                    'Archived',
-                    style: GoogleFonts.montserrat(
-                        fontSize: 12, color: Colors.black),
-                  ),
-                ),
-              ],
-              selectedIndex: _selectedIndex),
+                ],
+                selectedIndex: _selectedIndex),
+          ),
         ],
       ),
       // bottomSheet: _bottomBar(),
@@ -144,9 +148,9 @@ class _MainPageState extends State<MainPage> {
     print(notesViewType);
     return Container(
         child: StaggeredGridPage(
-          notesViewType: notesViewType,
-          selectedIndex: _selectedIndex,
-        ));
+      notesViewType: notesViewType,
+      selectedIndex: _selectedIndex,
+    ));
   }
 
   // Widget _bottomBar() {
@@ -194,18 +198,18 @@ class _MainPageState extends State<MainPage> {
                 : Icon(Icons.view_agenda),
             onPressed: () => _toggleViewType(),
           )
-        // InkWell(
-        //   child: GestureDetector(
-        //     onTap: () => _toggleViewType(),
-        //     child: Icon(
-        //       notesViewType == viewType.List
-        //           ? Icons.developer_board
-        //           : Icons.view_headline,
-        //       color: CentralStation.fontColor,
-        //     ),
-        //   ),
-        // ),
-      ),
+          // InkWell(
+          //   child: GestureDetector(
+          //     onTap: () => _toggleViewType(),
+          //     child: Icon(
+          //       notesViewType == viewType.List
+          //           ? Icons.developer_board
+          //           : Icons.view_headline,
+          //       color: CentralStation.fontColor,
+          //     ),
+          //   ),
+          // ),
+          ),
     ];
   }
 }
