@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/SqliteHandler.dart';
 import 'package:multi_screen/utility.dart';
@@ -14,6 +16,7 @@ class NotePage extends StatefulWidget {
   final Note noteInEditing;
 
   NotePage(this.noteInEditing);
+
   @override
   _NotePageState createState() => _NotePageState();
 }
@@ -25,6 +28,23 @@ class _NotePageState extends State<NotePage> {
   bool _isNewNote = false;
   final _titleFocus = FocusNode();
   final _contentFocus = FocusNode();
+
+  File _image;
+  final picker = ImagePicker();
+  List<Map<String, dynamic>> _allNotesInQueryResult = [];
+  bool _hasImages;
+
+  List<Widget> images;
+  List<String> imagePaths;
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) _image = File(pickedFile.path);
+      addImageToList(_image);
+      imagePaths.add(_image.path);
+    });
+  }
 
   String _titleFrominitial;
   String _contentFromInitial;
@@ -39,6 +59,8 @@ class _NotePageState extends State<NotePage> {
 
   @override
   void initState() {
+    images = new List();
+    imagePaths = new List();
     _editableNote = widget.noteInEditing;
     _titleController.text = _editableNote.title;
     _contentController.text = _editableNote.content;
@@ -48,6 +70,7 @@ class _NotePageState extends State<NotePage> {
     _titleFrominitial = widget.noteInEditing.title;
     _contentFromInitial = widget.noteInEditing.content;
 
+    _hasImages = false;
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
     }
@@ -57,6 +80,28 @@ class _NotePageState extends State<NotePage> {
       print("editable note id: ${_editableNote.id}");
       _persistData();
     });
+
+    if (!_isNewNote) {
+      var noteDB = NotesDBHandler();
+      var _testData = noteDB.selectAllImagesById(widget.noteInEditing.id);
+      _testData.then((value) {
+        setState(() {
+          this._allNotesInQueryResult = value;
+        });
+        showImagesAdded();
+      });
+    }
+  }
+
+  void showImagesAdded() {
+    int len = _allNotesInQueryResult.length;
+    if (len > 0)
+      setState(() {
+        _hasImages = true;
+      });
+    for (int i = 0; i < len; i++) {
+      addImageToList(File((_allNotesInQueryResult[i]["imagePath"])));
+    }
   }
 
   @override
@@ -67,6 +112,7 @@ class _NotePageState extends State<NotePage> {
 
     return WillPopScope(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         key: _globalKey,
         appBar: AppBar(
           brightness: Brightness.light,
@@ -85,49 +131,83 @@ class _NotePageState extends State<NotePage> {
               ),
             ),
             child: _body(context)),
-        floatingActionButton: Container(
-          decoration: BoxDecoration(
-              border: Border.all(width: 2, color: Colors.black),
-              // boxShadow: [
-              //   BoxShadow(
-              //       color: Colors.orange.withOpacity(0.8),
-              //       blurRadius: 20,
-              //       spreadRadius: 0,
-              //       offset: Offset(0, 4))
-              // ],
-              borderRadius: BorderRadius.circular(100)),
-          child: FloatingActionButton(
-            heroTag: 'FAB',
-            elevation: 0,
-            onPressed: () {
-              // CentralStation.updateNeeded = true;
-              _readyToPop();
-              Navigator.pop(context);
-            },
-            child: Icon(Icons.check),
-          ),
-        ),
       ),
       onWillPop: _readyToPop,
     );
   }
 
   Widget _body(BuildContext ctx) {
-    return Container(
-        color: noteColor,
-        padding: EdgeInsets.only(left: 16, right: 16, top: 12),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Flexible(
-                child: Container(
-                  padding: EdgeInsets.all(5),
+    return Stack(
+      children: [
+        Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(5),
 //          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
+              child: TextField(
+                autofocus: false,
+                decoration: InputDecoration(
+                    hintText: "Heading",
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
+                onChanged: (str) => {updateNoteObject()},
+                maxLines: null,
+                controller: _titleController,
+                focusNode: _titleFocus,
+                style: GoogleFonts.montserrat(
+                    color: Colors.black,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600),
+                cursorColor: Colors.blue,
+                // backgroundCursorColor: Colors.blue
+              ),
+            ),
+            Divider(
+              color: Colors.black45,
+            ),
+            Visibility(
+                maintainState: false,
+                visible: _hasImages,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      color: Colors.white,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: images != null
+                              ? images
+                              : [
+                            Container(
+                              child: Text("No Images added"),
+                            )
+                          ],
+                        ),
+                      ),
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Divider(
+                      color: Colors.black45,
+                    ),
+                  ],
+                )),
+            Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 65,
+                  ),
+                  padding: EdgeInsets.only(left: 16, right: 16, top: 12),
                   child: TextField(
                     autofocus: false,
                     decoration: InputDecoration(
-                        hintText: "Heading",
+                        hintText: "Body",
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         enabledBorder: InputBorder.none,
@@ -135,53 +215,37 @@ class _NotePageState extends State<NotePage> {
                         disabledBorder: InputBorder.none,
                         contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
                     onChanged: (str) => {updateNoteObject()},
-                    maxLines: null,
-                    controller: _titleController,
-                    focusNode: _titleFocus,
+                    maxLines: 99999,
+                    // line limit extendable later
+                    controller: _contentController,
+                    focusNode: _contentFocus,
                     style: GoogleFonts.montserrat(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600),
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
+                    // backgroundCursorColor: Colors.red,
                     cursorColor: Colors.blue,
-                    // backgroundCursorColor: Colors.blue
                   ),
-                ),
+                ))
+          ],
+        ),
+        Positioned(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: 60,
+            child: Card(
+              elevation: 4,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: _getBottomButtons(),
               ),
-              Divider(
-                color: Colors.black45,
-              ),
-              Flexible(
-                  child: Container(
-                      padding: EdgeInsets.all(5),
-//    decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-                      child: TextField(
-                        autofocus: false,
-                        decoration: InputDecoration(
-                            hintText: "Body",
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0)),
-                        onChanged: (str) => {updateNoteObject()},
-                        maxLines: 300, // line limit extendable later
-                        controller: _contentController,
-                        focusNode: _contentFocus,
-                        style: GoogleFonts.montserrat(
-                          color: Colors.black,
-                          fontSize: 20,
-                        ),
-                        // backgroundCursorColor: Colors.red,
-                        cursorColor: Colors.blue,
-                      )))
-            ],
+            ),
           ),
-          left: true,
-          right: true,
-          top: false,
-          bottom: false,
-        ));
+        )
+      ],
+    );
   }
 
   Widget _pageTitle() {
@@ -244,15 +308,26 @@ class _NotePageState extends State<NotePage> {
         });
   }
 
+  void _saveImages() {
+    var noteDB = NotesDBHandler();
+    for (int i = 0; i < imagePaths.length; i++) {
+      print(imagePaths.elementAt(i));
+      noteDB.insertImage(Images(
+          widget.noteInEditing.id, imagePaths.elementAt(i))); // for new note
+    }
+  }
+
   void _persistData() {
     updateNoteObject();
 
-    if (_editableNote.content.isNotEmpty) {
+    if (_editableNote.content.isNotEmpty && images.isEmpty) {
       var noteDB = NotesDBHandler();
+
+      _saveImages();
 
       if (_editableNote.id == -1) {
         Future<int> autoIncrementedId =
-            noteDB.insertNote(_editableNote, true); // for new note
+        noteDB.insertNote(_editableNote, true); // for new note
         // set the id of the note from the database after inserting the new note so for next persisting
         autoIncrementedId.then((value) {
           _editableNote.id = value;
@@ -277,7 +352,7 @@ class _NotePageState extends State<NotePage> {
     print("same content? ${_editableNote.content == _contentFromInitial}");
 
     if (!(_editableNote.title == _titleFrominitial &&
-            _editableNote.content == _contentFromInitial) ||
+        _editableNote.content == _contentFromInitial) ||
         (_isNewNote)) {
       // No changes to the note
       // Change last edit time only if the content of the note is mutated in compare to the note which the page was called with.
@@ -301,11 +376,11 @@ class _NotePageState extends State<NotePage> {
           }
           break;
         }
-      // case moreOptions.archive:
-      //   {
-      //     _archivePopup(context);
-      //   }
-      //   break;
+    // case moreOptions.archive:
+    //   {
+    //     _archivePopup(context);
+    //   }
+    //   break;
       case moreOptions.share:
         {
           if (_editableNote.content.isNotEmpty) {
@@ -337,7 +412,7 @@ class _NotePageState extends State<NotePage> {
                       Navigator.of(context).pop();
                       noteDB.deleteNote(_editableNote);
                       CentralStation.updateNeeded = true;
-
+                      _hasImages = false;
                       Navigator.of(context).pop();
                     },
                     child: Text("Yes")),
@@ -576,5 +651,46 @@ class _NotePageState extends State<NotePage> {
         _contentFromInitial; // widget.noteInEditing.content;
     _editableNote.dateLastEdited =
         _lastEditedForUndo; // widget.noteInEditing.dateLastEdited;
+  }
+
+  void addImageToList(File image) {
+    if (File == null) return;
+    setState(() {
+      _hasImages = true;
+      if (image != null)
+        images.add(Container(
+            height: 150,
+            width: 130,
+            child: image != null ? Image.file(image) : Text("Not Selected")));
+    });
+  }
+
+  List<Widget> _getBottomButtons() {
+    return [
+      Container(
+        width: 50,
+        margin: EdgeInsets.all(4),
+        child: RaisedButton(
+          color: Colors.yellow,
+          onPressed: () {
+            getImage();
+          },
+          child: Icon(Icons.image),
+        ),
+      ),
+      Container(
+        width: 50,
+        margin: EdgeInsets.all(4),
+        child: RaisedButton(
+          color: Colors.yellow,
+          onPressed: () {
+            // CentralStation.updateNeeded = true;
+            _readyToPop();
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.check),
+        ),
+      )
+    ];
   }
 }
