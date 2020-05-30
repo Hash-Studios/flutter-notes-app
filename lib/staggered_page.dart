@@ -53,18 +53,18 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
 
     return Container(
         child: Padding(
-      padding: _paddingForView(context),
-      child: new StaggeredGridView.count(
-        key: _stagKey,
-        crossAxisSpacing: 6,
-        mainAxisSpacing: 6,
-        crossAxisCount: _colForStaggeredView(context),
-        children: List.generate(_allNotesInQueryResult.length, (i) {
-          return _tileGenerator(i, widget.selectedIndex);
-        }),
-        staggeredTiles: _tilesForView(),
-      ),
-    ));
+          padding: _paddingForView(context),
+          child: new StaggeredGridView.count(
+            key: _stagKey,
+            crossAxisSpacing: 6,
+            mainAxisSpacing: 6,
+            crossAxisCount: _colForStaggeredView(context),
+            children: List.generate(_allNotesInQueryResult.length, (i) {
+              return _tileGenerator(i, widget.selectedIndex);
+            }),
+            staggeredTiles: _tilesForView(),
+          ),
+        ));
   }
 
   int _colForStaggeredView(BuildContext context) {

@@ -11,7 +11,6 @@ class Note {
   Color noteColor;
   int isStarred;
   int isArchived;
-  
 
   Note(this.id, this.title, this.content, this.dateCreated, this.dateLastEdited,
       this.noteColor, this.isStarred, this.isArchived);
@@ -37,16 +36,28 @@ class Note {
     return now.millisecondsSinceEpoch ~/ 1000;
   }
 
-  // void archiveNote() {
-  //   isArchived = 1;
-  // }
-  // void starNote() {
-  //   isStarred = 1;
-  // }
-  // void unArchiveNote() {
-  //   isArchived = 0;
-  // }
-  // void unStarNote() {
-  //   isStarred = 0;
-  // }
+// void archiveNote() {
+//   isArchived = 1;
+// }
+// void starNote() {
+//   isStarred = 1;
+// }
+// void unArchiveNote() {
+//   isArchived = 0;
+// }
+// void unStarNote() {
+//   isStarred = 0;
+// }
+}
+
+class Images {
+  int id;
+  String imagePath;
+
+  Images(this.id, this.imagePath);
+
+  Map<String, dynamic> toMap() {
+    var data = {'imagePath': imagePath, 'refId': id};
+    return data;
+  }
 }
