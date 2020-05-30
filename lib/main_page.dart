@@ -41,24 +41,70 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       floatingActionButton: Container(
-        decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.black),
-            //   boxShadow: [
-            //   BoxShadow(
-            //       color: Colors.orange.withOpacity(0.8),
-            //       blurRadius: 20,
-            //       spreadRadius: 0,
-            //       offset: Offset(0, 4))
-            // ],
-            borderRadius: BorderRadius.circular(100)),
-        child: FloatingActionButton.extended(
-          heroTag: 'FAB',
-          elevation: 0,
-          onPressed: () => _newNoteTapped(context),
-          label: Text("CREATE"),
-          icon: Icon(Icons.add),
-        ),
-      ),
+          decoration: BoxDecoration(
+              border: Border.all(width: 2, color: Colors.black),
+              //   boxShadow: [
+              //   BoxShadow(
+              //       color: Colors.orange.withOpacity(0.8),
+              //       blurRadius: 20,
+              //       spreadRadius: 0,
+              //       offset: Offset(0, 4))
+              // ],
+              borderRadius: BorderRadius.circular(100)),
+          child: Hero(
+            tag: 'FAB',
+            child: Container(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 80,
+                    child: FlatButton(
+                      padding: EdgeInsets.fromLTRB(5, 14, 0, 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(100),
+                              bottomLeft: Radius.circular(100))),
+                      color: Colors.orange,
+                      // elevation: 0,
+                      onPressed: () => _newNoteTapped(context),
+                      child: Icon(
+                        Icons.edit,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black,
+                    height: 56,
+                    width: 2,
+                  ),
+                  SizedBox(
+                    width: 80,
+                    child: FlatButton(
+                      padding: EdgeInsets.fromLTRB(0, 14, 5, 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(100),
+                              bottomRight: Radius.circular(100))),
+                      color: Colors.orange,
+                      // elevation: 0,
+                      onPressed: () => _newNoteTapped(context),
+                      child: Icon(Icons.photo, size: 28),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+          // FloatingActionButton.extended(
+          //   heroTag: 'FAB',
+          //   elevation: 0,
+          //   onPressed: () => _newNoteTapped(context),
+          //   label: Text("CREATE"),
+          //   icon: Icon(Icons.add),
+          // ),
+          ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
