@@ -41,9 +41,14 @@ class _PhotoPageState extends State<PhotoPage> {
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
     setState(() {
-      if (pickedFile != null) _image = File(pickedFile.path);
-      addImageToList(_image);
-      imagePaths.add(_image.path);
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        addImageToList(_image);
+        imagePaths.add(_image.path);
+      } else {
+        _readyToPop();
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -92,6 +97,8 @@ class _PhotoPageState extends State<PhotoPage> {
         showImagesAdded();
       });
     }
+    getImage();
+    super.initState();
   }
 
   void showImagesAdded() {
@@ -162,69 +169,67 @@ class _PhotoPageState extends State<PhotoPage> {
 
   Widget _body(BuildContext ctx) {
     ScreenUtil.init(context, width: 720, height: 1440, allowFontScaling: true);
-    return SingleChildScrollView(
-      child: SizedBox(
-        height: 1410.h,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(5),
+    return Scrollbar(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: 1290.h,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(5),
 //          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-              child: TextField(
-                autofocus: false,
-                decoration: InputDecoration(
-                    hintText: "Heading",
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                onChanged: (str) => {updateNoteObject()},
-                maxLines: null,
-                controller: _titleController,
-                focusNode: _titleFocus,
-                style: GoogleFonts.montserrat(
-                    color: Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600),
-                cursorColor: Colors.blue,
-                // backgroundCursorColor: Colors.blue
+                child: TextField(
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintText: "Heading",
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
+                  onChanged: (str) => {updateNoteObject()},
+                  maxLines: null,
+                  controller: _titleController,
+                  focusNode: _titleFocus,
+                  style: GoogleFonts.montserrat(
+                      color: Colors.black,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600),
+                  cursorColor: Colors.blue,
+                  // backgroundCursorColor: Colors.blue
+                ),
               ),
-            ),
-            Divider(
-              color: Colors.black45,
-            ),
-            Visibility(
-                maintainState: false,
-                visible: _hasImages,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      color: Colors.white,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: images != null
-                              ? images
-                              : [
-                                  Container(
-                                    child: Text("No Images added"),
-                                  )
-                                ],
-                        ),
+              Divider(
+                color: Colors.black45,
+              ),
+              Expanded(
+                child: Visibility(
+                    maintainState: false,
+                    visible: _hasImages,
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      color: noteColor,
+                      child:
+                          // SingleChildScrollView(
+                          //   scrollDirection: Axis.horizontal,
+                          //   child:
+                          Row(
+                        children: images != null
+                            ? images
+                            : [
+                                Container(
+                                  child: Text("No Images added"),
+                                )
+                              ],
                       ),
-                      height: MediaQuery.of(context).size.height * 0.15,
+                      // ),
+                      height: MediaQuery.of(context).size.height * 0.55,
                       width: MediaQuery.of(context).size.width,
-                    ),
-                    Divider(
-                      color: Colors.black45,
-                    ),
-                  ],
-                )),
-          ],
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -641,25 +646,14 @@ class _PhotoPageState extends State<PhotoPage> {
       _hasImages = true;
       if (image != null)
         images.add(Container(
-            height: 150,
-            width: 130,
-            child: image != null ? Image.file(image) : Text("Not Selected")));
+            // height: 1290.h,
+            width: 720.w,
+            child: image != null
+                ? Image.file(
+                    image,
+                    fit: BoxFit.fitHeight,
+                  )
+                : Text("Not Selected")));
     });
-  }
-
-  List<Widget> _getBottomButtons() {
-    return [
-      Container(
-        width: 50,
-        margin: EdgeInsets.all(4),
-        child: RaisedButton(
-          color: Colors.yellow,
-          onPressed: () {
-            getImage();
-          },
-          child: Icon(Icons.image),
-        ),
-      ),
-    ];
   }
 }

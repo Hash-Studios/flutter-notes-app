@@ -64,7 +64,6 @@ class _NotePageState extends State<NotePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (_editableNote.id == -1 && _editableNote.title.isEmpty) {
@@ -122,69 +121,71 @@ class _NotePageState extends State<NotePage> {
 
   Widget _body(BuildContext ctx) {
     ScreenUtil.init(context, width: 720, height: 1440, allowFontScaling: true);
-    return SingleChildScrollView(
-      child: SizedBox(
-        height: 1290.h,
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(5),
+    return Scrollbar(
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: 1290.h,
+          child: Column(
+            children: [
+              Container(
+                padding: EdgeInsets.all(5),
 //          decoration: BoxDecoration(border: Border.all(color: CentralStation.borderColor,width: 1 ),borderRadius: BorderRadius.all(Radius.circular(10)) ),
-              child: TextField(
-                autofocus: false,
-                decoration: InputDecoration(
-                    hintText: "Heading",
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                onChanged: (str) => {updateNoteObject()},
-                maxLines: null,
-                controller: _titleController,
-                focusNode: _titleFocus,
-                style: GoogleFonts.montserrat(
-                    color: Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600),
-                cursorColor: Colors.blue,
-                // backgroundCursorColor: Colors.blue
-              ),
-            ),
-            Divider(
-              color: Colors.black45,
-            ),
-            Expanded(
-                child: Container(
-              // margin: EdgeInsets.only(
-              //   bottom: MediaQuery.of(context).viewInsets.bottom + 65,
-              // ),
-              padding: EdgeInsets.only(left: 0, right: 0, top: 12),
-              child: TextField(
-                autofocus: false,
-                decoration: InputDecoration(
-                    hintText: "Body",
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                onChanged: (str) => {updateNoteObject()},
-                maxLines: 99999,
-                // line limit extendable later
-                controller: _contentController,
-                focusNode: _contentFocus,
-                style: GoogleFonts.montserrat(
-                  color: Colors.black,
-                  fontSize: 20,
+                child: TextField(
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintText: "Heading",
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
+                  onChanged: (str) => {updateNoteObject()},
+                  maxLines: null,
+                  controller: _titleController,
+                  focusNode: _titleFocus,
+                  style: GoogleFonts.montserrat(
+                      color: Colors.black,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600),
+                  cursorColor: Colors.blue,
+                  // backgroundCursorColor: Colors.blue
                 ),
-                // backgroundCursorColor: Colors.red,
-                cursorColor: Colors.blue,
               ),
-            ))
-          ],
+              Divider(
+                color: Colors.black45,
+              ),
+              Expanded(
+                  child: Container(
+                // margin: EdgeInsets.only(
+                //   bottom: MediaQuery.of(context).viewInsets.bottom + 65,
+                // ),
+                padding: EdgeInsets.only(left: 0, right: 0, top: 12),
+                child: TextField(
+                  autofocus: false,
+                  decoration: InputDecoration(
+                      hintText: "Body",
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
+                  onChanged: (str) => {updateNoteObject()},
+                  maxLines: 99999,
+                  // line limit extendable later
+                  controller: _contentController,
+                  focusNode: _contentFocus,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.black,
+                    fontSize: 20,
+                  ),
+                  // backgroundCursorColor: Colors.red,
+                  cursorColor: Colors.blue,
+                ),
+              ))
+            ],
+          ),
         ),
       ),
     );
