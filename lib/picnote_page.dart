@@ -313,13 +313,13 @@ class _PhotoPageState extends State<PhotoPage> {
       var noteDB = NotesDBHandler();
       if (_editableNote.id == -1) {
         Future<int> autoIncrementedId =
-            noteDB.insertPhotoNote(_editableNote, true); // for new note
+            noteDB.insertNote(_editableNote, true); // for new note
         // set the id of the note from the database after inserting the new note so for next persisting
         autoIncrementedId.then((value) {
           _editableNote.id = value;
         });
       } else {
-        noteDB.insertPhotoNote(
+        noteDB.insertNote(
             _editableNote, false); // for updating the existing note
       }
     }
@@ -425,7 +425,7 @@ class _PhotoPageState extends State<PhotoPage> {
     if (_editableNote.id != -1) {
       var noteDB = NotesDBHandler();
       _editableNote.noteColor = noteColor;
-      noteDB.insertPhotoNote(_editableNote, false);
+      noteDB.insertNote(_editableNote, false);
     }
   }
 

@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:multi_screen/notes.dart';
+import 'package:multi_screen/picnote_page.dart';
 import 'package:multi_screen/utility.dart';
 import 'package:multi_screen/note_page.dart';
 
@@ -18,7 +23,7 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   double _fontSize;
   Color tileColor;
   String title;
-  int isStarred;
+  int isPhoto;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +31,10 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     _fontSize = _determineFontSizeForContent();
     tileColor = widget.note.noteColor;
     title = widget.note.title;
-    isStarred = widget.note.isStarred;
+    isPhoto = widget.note.isPhoto;
 
     return InkWell(
-      onTap: () => _noteTapped(context),
+      onTap: () => _noteTapped(context, isPhoto),
       child: Ink(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 2),
@@ -48,10 +53,15 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     );
   }
 
-  void _noteTapped(BuildContext ctx) {
+  void _noteTapped(BuildContext ctx, int isPhoto) {
     CentralStation.updateNeeded = false;
-    Navigator.push(
-        ctx, CupertinoPageRoute(builder: (ctx) => NotePage(widget.note)));
+    if (isPhoto == 0) {
+      Navigator.push(
+          ctx, CupertinoPageRoute(builder: (ctx) => NotePage(widget.note)));
+    } else {
+      Navigator.push(
+          ctx, CupertinoPageRoute(builder: (ctx) => PhotoPage(widget.note)));
+    }
   }
 
   Widget constructChild() {
@@ -90,17 +100,25 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       //   ),
       // );
     }
-
-    contentsOfTiles.add(Padding(
-      padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
-      child: AutoSizeText(
-        _content,
-        style: TextStyle(fontSize: _fontSize),
-        maxLines: 10,
-        textScaleFactor: 1.4,
-      ),
-    ));
-
+    if (isPhoto == 0) {
+      contentsOfTiles.add(Padding(
+        padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+        child: AutoSizeText(
+          _content,
+          style: TextStyle(fontSize: _fontSize),
+          maxLines: 10,
+          textScaleFactor: 1.4,
+        ),
+      ));
+    } else {
+      File image;
+      decodeStringToImage(image, _content);
+      contentsOfTiles.add(Padding(
+          padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+          child: Container(
+            child: Image.file(image),
+          )));
+    }
     // contentsOfTiles.add(
     //   Divider(
     //     color: widget.note.noteColor,
@@ -136,5 +154,11 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
       fontSize = 14;
     }
     return fontSize;
+  }
+
+  Future<File> decodeStringToImage(File image, String base64Image) async {
+    Uint8List base64Decode = base64.decode(base64Image);
+    await image.writeAsBytes(base64Decode);
+    return image;
   }
 }

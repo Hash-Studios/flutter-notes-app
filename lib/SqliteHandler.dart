@@ -99,27 +99,27 @@ class NotesDBHandler {
     return true;
   }
 
-  Future<int> insertPhotoNote(Note note, bool isNew) async {
-    final Database db = await database;
-    print("insert called");
+  // Future<int> insertPhotoNote(Note note, bool isNew) async {
+  //   final Database db = await database;
+  //   print("insert called");
 
-    await db.insert(
-      'notes',
-      isNew ? note.toMap(false) : note.toMap(true),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+  //   await db.insert(
+  //     'notes',
+  //     isNew ? note.toMap(false) : note.toMap(true),
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
 
-    if (isNew) {
-      var one = await db.query("notes",
-          orderBy: "dateLastEdited desc",
-          where: "isPhoto = ?",
-          whereArgs: [1],
-          limit: 0);
-      int latestId = one.first["id"] as int;
-      return latestId;
-    }
-    return note.id;
-  }
+  //   if (isNew) {
+  //     var one = await db.query("notes",
+  //         orderBy: "dateLastEdited desc",
+  //         where: "isArchived = ?",
+  //         whereArgs: [0],
+  //         limit: 1);
+  //     int latestId = one.first["id"] as int;
+  //     return latestId;
+  //   }
+  //   return note.id;
+  // }
 
   Future<bool> archiveNote(Note note) async {
     if (note.id != -1) {
