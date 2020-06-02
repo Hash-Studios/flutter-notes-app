@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/SqliteHandler.dart';
 import 'package:multi_screen/utility.dart';
@@ -29,8 +26,6 @@ class _NotePageState extends State<NotePage> {
   bool _isNewNote = false;
   final _titleFocus = FocusNode();
   final _contentFocus = FocusNode();
-
-  List<Map<String, dynamic>> _allNotesInQueryResult = [];
 
   String _titleFrominitial;
   String _contentFromInitial;
@@ -377,7 +372,7 @@ class _NotePageState extends State<NotePage> {
   void _saveAndStartNewNote(BuildContext context) {
     _persistenceTimer.cancel();
     var emptyNote = new Note(
-        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0, 0);
     Navigator.of(context).pop();
     Navigator.push(
         context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
@@ -519,7 +514,7 @@ class _NotePageState extends State<NotePage> {
   void _copy() {
     var noteDB = NotesDBHandler();
     Note copy = Note(-1, _editableNote.title, _editableNote.content,
-        DateTime.now(), DateTime.now(), _editableNote.noteColor, 0, 0);
+        DateTime.now(), DateTime.now(), _editableNote.noteColor, 0, 0, 0);
 
     var status = noteDB.copyNote(copy);
     status.then((query_success) {

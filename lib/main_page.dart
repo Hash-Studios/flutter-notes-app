@@ -21,6 +21,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     notesViewType = viewType.Staggered;
+    super.initState();
   }
 
   int _selectedIndex = 0;
@@ -218,14 +219,15 @@ class _MainPageState extends State<MainPage> {
   void _newNoteTapped(BuildContext ctx) {
     // "-1" id indicates the note is not new
     var emptyNote = new Note(
-        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0, 0);
     Navigator.push(
         ctx, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
   }
-   void _newPhotoNoteTapped(BuildContext ctx) {
+
+  void _newPhotoNoteTapped(BuildContext ctx) {
     // "-1" id indicates the note is not new
     var emptyNote = new Note(
-        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0);
+        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0, 1);
     Navigator.push(
         ctx, CupertinoPageRoute(builder: (ctx) => PhotoPage(emptyNote)));
   }
