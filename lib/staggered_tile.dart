@@ -34,7 +34,8 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     isPhoto = widget.note.isPhoto;
 
     return InkWell(
-      onTap: () => _noteTapped(context, isPhoto),
+     borderRadius: BorderRadius.circular(8),
+     onTap: () => _noteTapped(context, isPhoto),
       child: Ink(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 2),
