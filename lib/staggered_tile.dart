@@ -29,7 +29,8 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     isStarred = widget.note.isStarred;
 
     return InkWell(
-      onTap: () => _noteTapped(context),
+     borderRadius: BorderRadius.circular(8),
+     onTap: () => _noteTapped(context),
       child: Ink(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 2),
