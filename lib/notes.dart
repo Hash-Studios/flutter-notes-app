@@ -11,9 +11,10 @@ class Note {
   Color noteColor;
   int isStarred;
   int isArchived;
+  int isPhoto;
 
   Note(this.id, this.title, this.content, this.dateCreated, this.dateLastEdited,
-      this.noteColor, this.isStarred, this.isArchived);
+      this.noteColor, this.isStarred, this.isArchived, this.isPhoto);
 
   Map<String, dynamic> toMap(bool forUpdate) {
     var data = {
@@ -22,6 +23,7 @@ class Note {
       'dateCreated': epochFromDate(dateCreated),
       'dateLastEdited': epochFromDate(dateLastEdited),
       'noteColor': noteColor.value,
+      'isPhoto': isPhoto,
       'isArchived': isArchived,
       'isStarred': isStarred,
     };
@@ -34,30 +36,5 @@ class Note {
 
   int epochFromDate(DateTime now) {
     return now.millisecondsSinceEpoch ~/ 1000;
-  }
-
-// void archiveNote() {
-//   isArchived = 1;
-// }
-// void starNote() {
-//   isStarred = 1;
-// }
-// void unArchiveNote() {
-//   isArchived = 0;
-// }
-// void unStarNote() {
-//   isStarred = 0;
-// }
-}
-
-class Images {
-  int id;
-  String imagePath;
-
-  Images(this.id, this.imagePath);
-
-  Map<String, dynamic> toMap() {
-    var data = {'imagePath': imagePath, 'refId': id};
-    return data;
   }
 }
