@@ -234,8 +234,9 @@ class _MainPageState extends State<MainPage> {
                                             },
                                             child: Text("Yes")),
                                         FlatButton(
-                                            onPressed: () =>
-                                                {Navigator.of(context).pop()},
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
                                             child: Text("No"))
                                       ],
                                     );

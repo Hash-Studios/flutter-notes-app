@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.orange),
         textTheme: GoogleFonts.montserratTextTheme(),
         primaryTextTheme: TextTheme(
-          title: TextStyle(color: Colors.black),
+          headline6: TextStyle(color: Colors.black),
         ),
         primarySwatch: Colors.orange,
       ),

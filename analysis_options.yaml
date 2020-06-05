@@ -1,0 +1,5 @@
+analyzer:
+  errors:
+    todo: ignore
+    must_call_super: ignore
+    missing_return: ignore

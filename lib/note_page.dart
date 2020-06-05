@@ -135,7 +135,9 @@ class _NotePageState extends State<NotePage> {
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                       contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                  onChanged: (str) => {updateNoteObject()},
+                  onChanged: (str) {
+                    updateNoteObject();
+                  },
                   maxLines: null,
                   controller: _titleController,
                   focusNode: _titleFocus,
@@ -166,7 +168,9 @@ class _NotePageState extends State<NotePage> {
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                       contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                  onChanged: (str) => {updateNoteObject()},
+                  onChanged: (str) {
+                    updateNoteObject();
+                  },
                   maxLines: 99999,
                   // line limit extendable later
                   controller: _contentController,
@@ -343,7 +347,9 @@ class _NotePageState extends State<NotePage> {
                     },
                     child: Text("Yes")),
                 FlatButton(
-                    onPressed: () => {Navigator.of(context).pop()},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                     child: Text("No"))
               ],
             );
@@ -369,14 +375,14 @@ class _NotePageState extends State<NotePage> {
     }
   }
 
-  void _saveAndStartNewNote(BuildContext context) {
-    _persistenceTimer.cancel();
-    var emptyNote = new Note(
-        -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0, 0);
-    Navigator.of(context).pop();
-    Navigator.push(
-        context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
-  }
+  // void _saveAndStartNewNote(BuildContext context) {
+  //   _persistenceTimer.cancel();
+  //   var emptyNote = new Note(
+  //       -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0, 0);
+  //   Navigator.of(context).pop();
+  //   Navigator.push(
+  //       context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
+  // }
 
   Future<bool> _readyToPop() async {
     _persistenceTimer.cancel();

@@ -89,7 +89,7 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   EdgeInsets _paddingForView(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double padding;
-    double top_bottom = 8;
+    // double top_bottom = 8;
     if (width > 500) {
       padding = (width) * 0.05; // 5% padding of width on both side
     } else {
