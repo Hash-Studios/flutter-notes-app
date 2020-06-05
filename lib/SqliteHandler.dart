@@ -143,6 +143,17 @@ class NotesDBHandler {
     }
   }
 
+  Future<bool> photoNote(Note note) async {
+    if (note.id != -1) {
+      final Database db = await database;
+
+      int idToUpdate = note.id;
+
+      db.update("notes", note.toMap(true),
+          where: "id = ?", whereArgs: [idToUpdate]);
+    }
+  }
+
   Future<bool> deleteNote(Note note) async {
     if (note.id != -1) {
       final Database db = await database;

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_screen/notes.dart';
@@ -29,6 +30,7 @@ class _PhotoPageState extends State<PhotoPage> {
   var noteColor;
   bool _isNewNote = false;
   final _titleFocus = FocusNode();
+  bool isSaved = false;
 
   File _image;
   final picker = ImagePicker();
@@ -98,7 +100,13 @@ class _PhotoPageState extends State<PhotoPage> {
         showImagesAdded();
       });
     }
-    getImage();
+    if (_editableNote.id == -1) {
+      getImage();
+    }
+    if (_editableNote.id == -1) {
+      _photoNote();
+    }
+
     super.initState();
   }
 
@@ -108,18 +116,31 @@ class _PhotoPageState extends State<PhotoPage> {
       setState(() {
         _hasImages = true;
       });
-    addImageToList(File((_allNotesInQueryResult[0]["content"])));
+    print(
+        String.fromCharCodes(_allNotesInQueryResult[0]["content"]).toString());
+    addImageToList(
+        File(String.fromCharCodes(_allNotesInQueryResult[0]["content"])));
   }
 
   Future<String> encodeImageToString(File image) async {
-    final bytes = await image.readAsBytes();
-    String base64Image = base64.encode(bytes);
-    return base64Image;
+    // final bytes = await image.readAsBytes();
+    // String base64Image = base64.encode(bytes);
+    if (isSaved) {
+      String path = 'storage/emulated/0';
+      print('$path/Flutter Notes/' +
+          image.path.split('/')[image.path.split('/').length - 1].toString());
+      return '$path/Flutter Notes/' +
+          image.path.split('/')[image.path.split('/').length - 1].toString();
+    }
+    // String base64Image = image.path;
+    // return base64Image;
   }
 
   Future<File> decodeStringToImage(File image, String base64Image) async {
-    Uint8List base64Decode = base64.decode(base64Image);
-    await image.writeAsBytes(base64Decode);
+    // Uint8List base64Decode = base64.decode(base64Image);
+    // await image.writeAsBytes(base64Decode);
+    image = File(base64Image);
+    print(base64Image);
     return image;
   }
 
@@ -309,18 +330,18 @@ class _PhotoPageState extends State<PhotoPage> {
   void _persistData() {
     updateNoteObject();
 
-    if (_editableNote.content.isNotEmpty) {
+    if (widget.noteInEditing.title.isNotEmpty) {
       var noteDB = NotesDBHandler();
-      if (_editableNote.id == -1) {
+      if (widget.noteInEditing.id == -1) {
         Future<int> autoIncrementedId =
-            noteDB.insertNote(_editableNote, true); // for new note
+            noteDB.insertNote(widget.noteInEditing, true); // for new note
         // set the id of the note from the database after inserting the new note so for next persisting
         autoIncrementedId.then((value) {
-          _editableNote.id = value;
+          widget.noteInEditing.id = value;
         });
       } else {
         noteDB.insertNote(
-            _editableNote, false); // for updating the existing note
+            widget.noteInEditing, false); // for updating the existing note
       }
     }
   }
@@ -432,8 +453,8 @@ class _PhotoPageState extends State<PhotoPage> {
   Future<bool> _readyToPop() async {
     _persistenceTimer.cancel();
     //show saved toast after calling _persistData function.
-    _globalKey.currentState.showSnackBar(new SnackBar(
-        content: Text("Saved"), duration: Duration(milliseconds: 500)));
+    // _globalKey.currentState.showSnackBar(new SnackBar(
+    //     content: Text("Saved"), duration: Duration(milliseconds: 500)));
     _persistData();
     return true;
   }
@@ -590,28 +611,28 @@ class _PhotoPageState extends State<PhotoPage> {
   //       content: Text("Unarchived"), duration: Duration(milliseconds: 500)));
   // }
 
-  // void _unStarThisNote(BuildContext context) {
-  //   // Navigator.of(context).pop();
-  //   // set archived flag to true and send the entire note object in the database to be updated
-  //   setState(() {
-  //     _editableNote.isStarred = 0;
-  //   });
-  //   var noteDB = NotesDBHandler();
-  //   noteDB.starNote(_editableNote);
-  //   // update will be required to remove the archived note from the staggered view
-  //   CentralStation.updateNeeded = true;
-  //   _persistenceTimer.cancel(); // shutdown the timer
+  void _photoNote() {
+    // Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    setState(() {
+      _editableNote.isPhoto = 1;
+    });
+    var noteDB = NotesDBHandler();
+    noteDB.photoNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    // _persistenceTimer.cancel(); // shutdown the timer
 
-  //   // Navigator.of(context).pop(); // pop back to staggered view
-  //   // TODO: OPTIONAL show the toast of unstar completion
-  //   _globalKey.currentState.showSnackBar(new SnackBar(
-  //       content: Text("Unstarred"), duration: Duration(milliseconds: 500)));
-  // }
+    // Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of unstar completion
+    // _globalKey.currentState.showSnackBar(new SnackBar(
+    //     content: Text("Unstarred"), duration: Duration(milliseconds: 500)));
+  }
 
   void _copy() {
     var noteDB = NotesDBHandler();
     Note copy = Note(-1, _editableNote.title, _editableNote.content,
-        DateTime.now(), DateTime.now(), _editableNote.noteColor, 1, 0, 0);
+        DateTime.now(), DateTime.now(), _editableNote.noteColor, 0, 0, 1);
 
     var status = noteDB.copyNote(copy);
     status.then((query_success) {
@@ -630,20 +651,34 @@ class _PhotoPageState extends State<PhotoPage> {
   //       _lastEditedForUndo; // widget.noteInEditing.dateLastEdited;
   // }
 
-  void addImageToList(File image) {
-    if (File == null) return;
-    setState(() {
-      _hasImages = true;
-      if (image != null)
-        images.add(Container(
-            // height: 1290.h,
-            width: 720.w,
-            child: image != null
-                ? Image.file(
-                    image,
-                    fit: BoxFit.fitHeight,
-                  )
-                : Text("Not Selected")));
-    });
+  void addImageToList(File image) async {
+    if (_editableNote.id == -1) {
+      if (File == null) return;
+      await GallerySaver.saveImage(image.path, albumName: "Flutter Notes");
+      setState(() {
+        isSaved = true;
+        _hasImages = true;
+        if (image != null)
+          images.add(Container(
+              // height: 1290.h,
+              width: 720.w,
+              child: image != null
+                  ? Image.file(
+                      image,
+                      fit: BoxFit.fitHeight,
+                    )
+                  : Text("Not Selected")));
+      });
+    } else {
+      images.add(
+        Container(
+          width: 720.w,
+          child: Image.file(
+            image,
+            fit: BoxFit.fitHeight,
+          ),
+        ),
+      );
+    }
   }
 }

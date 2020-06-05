@@ -109,9 +109,9 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
             DateTime.fromMillisecondsSinceEpoch(
                 _allNotesInQueryResult[i]["dateLastEdited"] * 1000),
             Color(_allNotesInQueryResult[i]["noteColor"]),
-            _allNotesInQueryResult[i]["isPhoto"],
             _allNotesInQueryResult[i]["isStarred"],
-            _allNotesInQueryResult[i]["isArchived"]),
+            _allNotesInQueryResult[i]["isArchived"],
+            _allNotesInQueryResult[i]["isPhoto"]),
         selectedIndex);
   }
 

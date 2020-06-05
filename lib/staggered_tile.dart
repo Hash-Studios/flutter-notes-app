@@ -34,8 +34,8 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     isPhoto = widget.note.isPhoto;
 
     return InkWell(
-     borderRadius: BorderRadius.circular(8),
-     onTap: () => _noteTapped(context, isPhoto),
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => _noteTapped(context, isPhoto),
       child: Ink(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.black, width: 2),
@@ -114,11 +114,16 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
     } else {
       File image;
       decodeStringToImage(image, _content);
-      contentsOfTiles.add(Padding(
+      contentsOfTiles.add(
+        Padding(
           padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
           child: Container(
-            child: Image.file(image),
-          )));
+            child: Image(
+              image: FileImage(File(_content)),
+            ),
+          ),
+        ),
+      );
     }
     // contentsOfTiles.add(
     //   Divider(
@@ -158,8 +163,9 @@ class _MyStaggeredTileState extends State<MyStaggeredTile> {
   }
 
   Future<File> decodeStringToImage(File image, String base64Image) async {
-    Uint8List base64Decode = base64.decode(base64Image);
-    await image.writeAsBytes(base64Decode);
+    // Uint8List base64Decode = base64.decode(base64Image);
+    // await image.writeAsBytes(base64Decode);
+    image = new File(base64Image);
     return image;
   }
 }
