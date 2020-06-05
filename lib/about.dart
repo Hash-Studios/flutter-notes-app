@@ -63,6 +63,7 @@ class AboutDialog extends StatelessWidget {
                     )),
                 title: Text(
                   "Hash Studios",
+                  key: Key('DevName'),
                   style: TextStyle(
                       color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
