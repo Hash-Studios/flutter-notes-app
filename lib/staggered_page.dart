@@ -49,6 +49,10 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
       if (CentralStation.updateNeeded) {
         retrieveArchivedNotesFromDatabase();
       }
+    } else if (widget.selectedIndex == 3) {
+      if (CentralStation.updateNeeded) {
+        retrievePhotoNotesFromDatabase();
+      }
     }
 
     return Container(
@@ -140,6 +144,17 @@ class _StaggeredGridPageState extends State<StaggeredGridPage> {
   void retrieveArchivedNotesFromDatabase() {
     // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
     var _testData = noteDB.selectArchivedNotes();
+    _testData.then((value) {
+      setState(() {
+        this._allNotesInQueryResult = value;
+        CentralStation.updateNeeded = false;
+      });
+    });
+  }
+
+  void retrievePhotoNotesFromDatabase() {
+    // queries for all the notes from the database ordered by latest edited note. excludes archived notes.
+    var _testData = noteDB.selectPhotoNotes();
     _testData.then((value) {
       setState(() {
         this._allNotesInQueryResult = value;

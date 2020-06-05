@@ -197,7 +197,7 @@ class _MainPageState extends State<MainPage> {
                   labelType: NavigationRailLabelType.selected,
                   backgroundColor: Colors.amber,
                   onDestinationSelected: (int index) {
-                    if (index != 3) {
+                    if (index != 4) {
                       setState(() {
                         CentralStation.updateNeeded = true;
                         _selectedIndex = index;
@@ -247,6 +247,21 @@ class _MainPageState extends State<MainPage> {
                       ),
                       label: Text(
                         'Archived',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12, color: Colors.black),
+                      ),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(
+                        LineAwesomeIcons.photo,
+                        size: 28,
+                      ),
+                      selectedIcon: FaIcon(
+                        FontAwesomeIcons.solidImage,
+                        color: Colors.black,
+                      ),
+                      label: Text(
+                        'Images',
                         style: GoogleFonts.montserrat(
                             fontSize: 12, color: Colors.black),
                       ),
