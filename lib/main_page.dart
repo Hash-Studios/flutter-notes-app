@@ -7,6 +7,8 @@ import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/note_page.dart';
 import 'package:multi_screen/utility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 
 enum viewType { List, Staggered }
 
@@ -71,14 +73,14 @@ class _MainPageState extends State<MainPage> {
                       // elevation: 0,
                       onPressed: () => _newNoteTapped(context),
                       child: Icon(
-                        Icons.edit,
-                        size: 28,
+                        LineAwesomeIcons.edit,
+                        size: 32,
                       ),
                     ),
                   ),
                   Container(
                     color: Colors.black,
-                    height: 56,
+                    height: 60,
                     width: 2,
                   ),
                   SizedBox(
@@ -92,7 +94,7 @@ class _MainPageState extends State<MainPage> {
                       color: Colors.orange,
                       // elevation: 0,
                       onPressed: () => _newPhotoNoteTapped(context),
-                      child: Icon(Icons.photo, size: 28),
+                      child: Icon(LineAwesomeIcons.file_image_o, size: 32),
                     ),
                   ),
                 ],
@@ -107,86 +109,148 @@ class _MainPageState extends State<MainPage> {
           //   icon: Icon(Icons.add),
           // ),
           ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Expanded(
-            flex: 9,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.black, width: 2),
-                  right: BorderSide(color: Colors.black, width: 2),
-                ),
-              ),
-              height: 1440.h,
-              // width: 604.5.w,
-              child: Container(
-                padding: EdgeInsets.only(top: 8),
-                child: SafeArea(
-                  child: _body(),
-                  right: true,
-                  left: true,
-                  top: true,
-                  bottom: true,
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: NavigationRail(
-                unselectedIconTheme: IconThemeData(color: Colors.black54),
-                labelType: NavigationRailLabelType.selected,
-                backgroundColor: Colors.amber,
-                onDestinationSelected: (int index) {
-                  setState(() {
-                    CentralStation.updateNeeded = true;
-                    _selectedIndex = index;
-                  });
-                },
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.insert_emoticon),
-                    selectedIcon: Icon(
-                      Icons.note,
-                      color: Colors.black,
-                    ),
-                    label: Text(
-                      'All',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 12, color: Colors.black),
-                    ),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.star_border),
-                    selectedIcon: Icon(
-                      Icons.star,
-                      color: Colors.black,
-                    ),
-                    label: Text(
-                      'Starred',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 12, color: Colors.black),
-                    ),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.arrow_downward),
-                    selectedIcon: Icon(
-                      Icons.archive,
-                      color: Colors.black,
-                    ),
-                    label: Text(
-                      'Archived',
-                      style: GoogleFonts.montserrat(
-                          fontSize: 12, color: Colors.black),
+      body: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Expanded(
+              flex: 9,
+              child: Stack(
+                children: <Widget>[
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Container(
+                  //     color: Colors.amber,
+                  //     child: SizedBox(
+                  //       width: 20.w,
+                  //       height: 20.h,
+                  //       child: Text(''),
+                  //     ),
+                  //   ),
+                  // ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       color: Colors.white,
+                  //       borderRadius: BorderRadius.circular(15),
+                  //     ),
+                  //     child: SizedBox(
+                  //       width: 20.w,
+                  //       height: 20.h,
+                  //     ),
+                  //   ),
+                  // ),
+                  Container(
+                      decoration: BoxDecoration(
+                        // borderRadius: BorderRadius.only(
+                        //   topRight: Radius.circular(15),
+                        // ),
+                        // border: Border.all(color: Colors.black, width: 2),
+                        border: Border(
+                          right: BorderSide(color: Colors.black, width: 2),
+                          top: BorderSide(color: Colors.black, width: 2),
+                        ),
+                      ),
+                      height: 1440.h,
+                      // width: 604.5.w,
+                      child: Center(
+                        child: Text(''),
+                      )),
+                  // Padding(
+                  //   padding: const EdgeInsets.fromLTRB(0, 2, 2, 0),
+                  //   child: Align(
+                  //     alignment: Alignment.bottomLeft,
+                  //     child: Container(
+                  //       decoration: BoxDecoration(
+                  //         border: Border(
+                  // left: BorderSide(color: Colors.white, width: 3),
+                  // bottom: BorderSide(color: Colors.white, width: 3),
+                  //         ),
+                  //       ),
+                  //       child: Center(
+                  //         child: Text(''),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  Container(
+                    padding: EdgeInsets.only(top: 8),
+                    child: SafeArea(
+                      child: _body(),
+                      right: true,
+                      left: true,
+                      top: true,
+                      bottom: true,
                     ),
                   ),
                 ],
-                selectedIndex: _selectedIndex),
-          ),
-        ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: NavigationRail(
+                  unselectedIconTheme: IconThemeData(color: Colors.black54),
+                  labelType: NavigationRailLabelType.selected,
+                  backgroundColor: Colors.amber,
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      CentralStation.updateNeeded = true;
+                      _selectedIndex = index;
+                    });
+                  },
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(
+                        LineAwesomeIcons.sticky_note_o,
+                        size: 30,
+                      ),
+                      selectedIcon: FaIcon(
+                        FontAwesomeIcons.solidStickyNote,
+                        color: Colors.black,
+                      ),
+                      label: Text(
+                        'All',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12, color: Colors.black),
+                      ),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(
+                        LineAwesomeIcons.star_o,
+                        size: 30,
+                      ),
+                      selectedIcon: FaIcon(
+                        FontAwesomeIcons.solidStar,
+                        color: Colors.black,
+                      ),
+                      label: Text(
+                        'Starred',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12, color: Colors.black),
+                      ),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(
+                        LineAwesomeIcons.archive,
+                        size: 30,
+                      ),
+                      selectedIcon: FaIcon(
+                        FontAwesomeIcons.archive,
+                        color: Colors.black,
+                      ),
+                      label: Text(
+                        'Archived',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 12, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                  selectedIndex: _selectedIndex),
+            ),
+          ],
+        ),
       ),
       // bottomSheet: _bottomBar(),
     );
@@ -250,8 +314,8 @@ class _MainPageState extends State<MainPage> {
           child: IconButton(
             color: Colors.black,
             icon: notesViewType == viewType.List
-                ? Icon(Icons.view_compact)
-                : Icon(Icons.view_agenda),
+                ? FaIcon(FontAwesomeIcons.thLarge)
+                : FaIcon(FontAwesomeIcons.thList),
             onPressed: () => _toggleViewType(),
           )
           // InkWell(
