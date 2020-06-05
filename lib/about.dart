@@ -12,24 +12,17 @@ class AboutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Card(
-        elevation: 0,
-        color: Colors.transparent,
-        child: IconButton(
-          padding: EdgeInsets.only(bottom: 2),
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          onPressed: () {
-            showCupertinoDialog(
-                context: context,
-                builder: (BuildContext context) => AboutDialog());
-          },
-          icon: FaIcon(LineAwesomeIcons.info_circle),
-          color: Colors.black,
-          iconSize: 30,
-        ),
+      padding: const EdgeInsets.all(14.0),
+      child: IconButton(
+        padding: EdgeInsets.only(bottom: 2),
+        onPressed: () {
+          showCupertinoDialog(
+              context: context,
+              builder: (BuildContext context) => AboutDialog());
+        },
+        icon: FaIcon(LineAwesomeIcons.info_circle),
+        color: Colors.black54,
+        iconSize: 30,
       ),
     );
   }

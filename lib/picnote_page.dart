@@ -283,27 +283,27 @@ class _PhotoPageState extends State<PhotoPage> {
     //   ));
     // }
     actions += [
-      //   IconButton(
-      //     icon: (_editableNote.isArchived == 0)
-      //         ? Icon(Icons.archive)
-      //         : Icon(Icons.archive),
-      //     color: Colors.black45,
-      //     onPressed: () => _archivePopup(context),
-      //   ),
+      IconButton(
+        icon: (_editableNote.isArchived == 0)
+            ? Icon(Icons.archive)
+            : Icon(Icons.archive),
+        color: Colors.black45,
+        onPressed: () => _archivePopup(context),
+      ),
       // IconButton(
       //   icon: Icon(Icons.add),
       //   color: Colors.black45,
       //   onPressed: () => _saveAndStartNewNote(context),
       // ),
-      // IconButton(
-      //   icon: (_editableNote.isStarred == 0)
-      //       ? Icon(Icons.star_border)
-      //       : Icon(Icons.star),
-      //   color: Colors.black45,
-      //   onPressed: () => (_editableNote.isStarred == 0)
-      //       ? _starThisNote(context)
-      //       : _unStarThisNote(context),
-      // ),
+      IconButton(
+        icon: (_editableNote.isStarred == 0)
+            ? Icon(Icons.star_border)
+            : Icon(Icons.star),
+        color: Colors.black45,
+        onPressed: () => (_editableNote.isStarred == 0)
+            ? _starThisNote(context)
+            : _unStarThisNote(context),
+      ),
       IconButton(
         icon: Icon(Icons.more_vert),
         color: Colors.black45,
@@ -425,6 +425,9 @@ class _PhotoPageState extends State<PhotoPage> {
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
+                      // print(widget.noteInEditing.content);
+                      // final dir = Directory(widget.noteInEditing.content);
+                      // dir.delete(recursive: false);
                       _persistenceTimer.cancel();
                       var noteDB = NotesDBHandler();
                       Navigator.of(context).pop();
@@ -472,51 +475,51 @@ class _PhotoPageState extends State<PhotoPage> {
     return true;
   }
 
-  // void _archivePopup(BuildContext context) {
-  //   if (_editableNote.isArchived == 0) {
-  //     if (_editableNote.id != -1) {
-  //       showDialog(
-  //           context: context,
-  //           builder: (BuildContext context) {
-  //             return AlertDialog(
-  //               title: Text("Confirm ?"),
-  //               content: Text("This note will be archived"),
-  //               actions: <Widget>[
-  //                 FlatButton(
-  //                     onPressed: () => _archiveThisNote(context),
-  //                     child: Text("Yes")),
-  //                 FlatButton(
-  //                     onPressed: () => Navigator.of(context).pop(),
-  //                     child: Text("No"))
-  //               ],
-  //             );
-  //           });
-  //     } else {
-  //       _exitWithoutSaving(context);
-  //     }
-  //   } else {
-  //     if (_editableNote.id != -1) {
-  //       showDialog(
-  //           context: context,
-  //           builder: (BuildContext context) {
-  //             return AlertDialog(
-  //               title: Text("Confirm ?"),
-  //               content: Text("This note will be unarchived"),
-  //               actions: <Widget>[
-  //                 FlatButton(
-  //                     onPressed: () => _unArchiveThisNote(context),
-  //                     child: Text("Yes")),
-  //                 FlatButton(
-  //                     onPressed: () => Navigator.of(context).pop(),
-  //                     child: Text("No"))
-  //               ],
-  //             );
-  //           });
-  //     } else {
-  //       _exitWithoutSaving(context);
-  //     }
-  //   }
-  // }
+  void _archivePopup(BuildContext context) {
+    if (_editableNote.isArchived == 0) {
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be archived"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _archiveThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
+    } else {
+      if (_editableNote.id != -1) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm ?"),
+                content: Text("This note will be unarchived"),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () => _unArchiveThisNote(context),
+                      child: Text("Yes")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("No"))
+                ],
+              );
+            });
+      } else {
+        _exitWithoutSaving(context);
+      }
+    }
+  }
 
   // void _starPopup(BuildContext context) {
   //   if (_editableNote.isStarred == 0) {
@@ -570,59 +573,77 @@ class _PhotoPageState extends State<PhotoPage> {
     Navigator.of(context).pop();
   }
 
-  // void _archiveThisNote(BuildContext context) {
-  //   Navigator.of(context).pop();
-  //   // set archived flag to true and send the entire note object in the database to be updated
-  //   _editableNote.isArchived = 1;
-  //   _editableNote.isStarred = 0;
-  //   var noteDB = NotesDBHandler();
-  //   noteDB.archiveNote(_editableNote);
-  //   // update will be required to remove the archived note from the staggered view
-  //   CentralStation.updateNeeded = true;
-  //   _persistenceTimer.cancel(); // shutdown the timer
+  void _archiveThisNote(BuildContext context) {
+    Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    _editableNote.isArchived = 1;
+    _editableNote.isStarred = 0;
+    var noteDB = NotesDBHandler();
+    noteDB.archiveNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    _persistenceTimer.cancel(); // shutdown the timer
 
-  //   // Navigator.of(context).pop(); // pop back to staggered view
-  //   // TODO: OPTIONAL show the toast of archive completion
-  //   _globalKey.currentState.showSnackBar(new SnackBar(
-  //     content: Text("Archived"),
-  //     duration: Duration(milliseconds: 500),
-  //   ));
-  // }
+    // Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of archive completion
+    _globalKey.currentState.showSnackBar(new SnackBar(
+      content: Text("Archived"),
+      duration: Duration(milliseconds: 500),
+    ));
+  }
 
-  // void _starThisNote(BuildContext context) {
-  //   // Navigator.of(context).pop();
-  //   // set archived flag to true and send the entire note object in the database to be updated
-  //   setState(() {
-  //     _editableNote.isStarred = 1;
-  //     _editableNote.isArchived = 0;
-  //   });
-  //   var noteDB = NotesDBHandler();
-  //   noteDB.starNote(_editableNote);
-  //   // update will be required to remove the archived note from the staggered view
-  //   CentralStation.updateNeeded = true;
-  //   _persistenceTimer.cancel(); // shutdown the timer
+  void _starThisNote(BuildContext context) {
+    // Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    setState(() {
+      _editableNote.isStarred = 1;
+      _editableNote.isArchived = 0;
+    });
+    var noteDB = NotesDBHandler();
+    noteDB.starNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    _persistenceTimer.cancel(); // shutdown the timer
 
-  //   // Navigator.of(context).pop(); // pop back to staggered view
-  //   // TODO: OPTIONAL show the toast of star completion
-  //   _globalKey.currentState.showSnackBar(new SnackBar(
-  //       content: Text("Starred"), duration: Duration(milliseconds: 500)));
-  // }
+    // Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of star completion
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Starred"), duration: Duration(milliseconds: 500)));
+  }
 
-  // void _unArchiveThisNote(BuildContext context) {
-  //   Navigator.of(context).pop();
-  //   // set archived flag to true and send the entire note object in the database to be updated
-  //   _editableNote.isArchived = 0;
-  //   var noteDB = NotesDBHandler();
-  //   noteDB.archiveNote(_editableNote);
-  //   // update will be required to remove the archived note from the staggered view
-  //   CentralStation.updateNeeded = true;
-  //   _persistenceTimer.cancel(); // shutdown the timer
+  void _unArchiveThisNote(BuildContext context) {
+    Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    _editableNote.isArchived = 0;
+    var noteDB = NotesDBHandler();
+    noteDB.archiveNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    _persistenceTimer.cancel(); // shutdown the timer
 
-  //   // Navigator.of(context).pop(); // pop back to staggered view
-  //   // TODO: OPTIONAL show the toast of unarchive completion
-  //   _globalKey.currentState.showSnackBar(new SnackBar(
-  //       content: Text("Unarchived"), duration: Duration(milliseconds: 500)));
-  // }
+    // Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of unarchive completion
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Unarchived"), duration: Duration(milliseconds: 500)));
+  }
+
+  void _unStarThisNote(BuildContext context) {
+    // Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    setState(() {
+      _editableNote.isStarred = 0;
+    });
+    var noteDB = NotesDBHandler();
+    noteDB.starNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    // _persistenceTimer.cancel(); // shutdown the timer
+
+    // Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of unstar completion
+    _globalKey.currentState.showSnackBar(new SnackBar(
+        content: Text("Unstarred"), duration: Duration(milliseconds: 500)));
+  }
 
   void _photoNote() {
     // Navigator.of(context).pop();
