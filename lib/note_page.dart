@@ -381,8 +381,8 @@ class _NotePageState extends State<NotePage> {
   Future<bool> _readyToPop() async {
     _persistenceTimer.cancel();
     //show saved toast after calling _persistData function.
-    _globalKey.currentState.showSnackBar(new SnackBar(
-        content: Text("Saved"), duration: Duration(milliseconds: 500)));
+    // _globalKey.currentState.showSnackBar(new SnackBar(
+    //     content: Text("Saved"), duration: Duration(milliseconds: 500)));
     _persistData();
     return true;
   }

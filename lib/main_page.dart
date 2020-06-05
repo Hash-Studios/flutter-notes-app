@@ -10,6 +10,7 @@ import 'package:multi_screen/utility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
+import 'package:multi_screen/SqliteHandler.dart';
 
 enum viewType { List, Staggered }
 
@@ -197,14 +198,55 @@ class _MainPageState extends State<MainPage> {
                   labelType: NavigationRailLabelType.selected,
                   backgroundColor: Colors.amber,
                   onDestinationSelected: (int index) {
-                    if (index != 4) {
+                    if (index != 4 || index != 5) {
                       setState(() {
                         CentralStation.updateNeeded = true;
                         _selectedIndex = index;
                       });
                     }
                   },
-                  trailing: AboutButton(),
+                  trailing: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: IconButton(
+                            icon: Icon(
+                              LineAwesomeIcons.trash_o,
+                              size: 30,
+                              color: Colors.black87,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Confirm ?"),
+                                      content: Text(
+                                          "All notes will be deleted permanently"),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            onPressed: () async {
+                                              await NotesDBHandler().deleteDB();
+                                              await NotesDBHandler().initDB();
+                                              CentralStation.updateNeeded =
+                                                  true;
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("Yes")),
+                                        FlatButton(
+                                            onPressed: () =>
+                                                {Navigator.of(context).pop()},
+                                            child: Text("No"))
+                                      ],
+                                    );
+                                  });
+
+                              setState(() {});
+                            }),
+                      ),
+                      AboutButton(),
+                    ],
+                  ),
                   destinations: [
                     NavigationRailDestination(
                       icon: Icon(

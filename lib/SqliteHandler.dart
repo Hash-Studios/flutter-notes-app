@@ -46,6 +46,12 @@ class NotesDBHandler {
     return dbConnection;
   }
 
+  deleteDB() async {
+    var path = await getDatabasesPath();
+    var dbPath = join(path, 'notes.db');
+    await deleteDatabase(dbPath);
+  }
+
   String _buildCreateQuery() {
     String query = "CREATE TABLE IF NOT EXISTS ";
     query += tableName;
