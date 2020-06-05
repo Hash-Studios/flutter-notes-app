@@ -448,7 +448,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.archiveNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    _persistenceTimer.cancel(); // shutdown the timer
+    // _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of archive completion
@@ -469,7 +469,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.starNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    _persistenceTimer.cancel(); // shutdown the timer
+    // _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of star completion
@@ -485,7 +485,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.archiveNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    _persistenceTimer.cancel(); // shutdown the timer
+    // _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of unarchive completion
@@ -503,7 +503,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.starNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    _persistenceTimer.cancel(); // shutdown the timer
+    // _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of unstar completion
