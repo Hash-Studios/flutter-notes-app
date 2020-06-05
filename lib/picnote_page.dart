@@ -1,7 +1,5 @@
 import 'dart:async';
-// import 'dart:convert';
 import 'dart:io';
-// import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +11,7 @@ import 'package:multi_screen/SqliteHandler.dart';
 import 'package:multi_screen/photoViewer.dart';
 import 'package:multi_screen/utility.dart';
 import 'package:multi_screen/options_sheet.dart';
-import 'package:share/share.dart';
+// import 'package:flutter_share_content/flutter_share_content.dart';
 import 'package:flutter/services.dart';
 
 class PhotoPage extends StatefulWidget {
@@ -392,7 +390,19 @@ class _PhotoPageState extends State<PhotoPage> {
       case moreOptions.share:
         {
           if (_editableNote.content.isNotEmpty) {
-            Share.share("${_editableNote.title}\n${_editableNote.content}");
+            // FlutterShareContent.shareContent(
+            //     imageUrl: '${widget.noteInEditing.content}',
+            //     title: '${widget.noteInEditing.title}',
+            //     msg: '${widget.noteInEditing.title}');
+            // Share.shareFile(
+            //   File('${widget.noteInEditing.content}'),
+            //   subject: '${widget.noteInEditing.title}',
+            //   text: '${widget.noteInEditing.title}',
+            // );
+            // FlutterShareFile.shareImage(
+            //     widget.noteInEditing.content,
+            //     '${widget.noteInEditing.title}.png',
+            //     '${widget.noteInEditing.title}');
           }
           break;
         }
