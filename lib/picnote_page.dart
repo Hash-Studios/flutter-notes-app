@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_screen/notes.dart';
 import 'package:multi_screen/SqliteHandler.dart';
+import 'package:multi_screen/photoViewer.dart';
 import 'package:multi_screen/utility.dart';
 import 'package:multi_screen/options_sheet.dart';
 import 'package:share/share.dart';
@@ -660,22 +661,44 @@ class _PhotoPageState extends State<PhotoPage> {
         _hasImages = true;
         if (image != null)
           images.add(Container(
-              // height: 1290.h,
-              width: 720.w,
+            width: 720.w,
+            child: InkWell(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PhotoViewer(image: image))),
               child: image != null
-                  ? Image.file(
-                      image,
-                      fit: BoxFit.fitHeight,
+                  ? Ink(
+                      child: Hero(
+                        tag: "image",
+                        child: Image.file(
+                          image,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
                     )
-                  : Text("Not Selected")));
+                  : Text("Not Selected"),
+            ),
+          ));
       });
     } else {
       images.add(
         Container(
           width: 720.w,
-          child: Image.file(
-            image,
-            fit: BoxFit.fitHeight,
+          child: InkWell(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhotoViewer(image: image))),
+            child: Ink(
+              child: Hero(
+                tag: "image",
+                child: Image.file(
+                  image,
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ),
           ),
         ),
       );
