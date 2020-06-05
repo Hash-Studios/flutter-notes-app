@@ -36,7 +36,7 @@ class AboutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: new Text("Flutter Notes v1.0.0"),
+      title: new Text("Tizeno v1.0.1"),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -50,6 +50,11 @@ class AboutDialog extends StatelessWidget {
               color: Colors.white54,
               borderRadius: BorderRadius.circular(20),
               child: new ListTile(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  String link = "https://www.github.com/Hash-Studios";
+                  _launchURL(link);
+                },
                 leading: Container(
                     padding: EdgeInsets.only(right: 12.0),
                     decoration: new BoxDecoration(

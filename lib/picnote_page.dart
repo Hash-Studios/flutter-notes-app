@@ -126,9 +126,9 @@ class _PhotoPageState extends State<PhotoPage> {
     // String base64Image = base64.encode(bytes);
     if (isSaved) {
       String path = 'storage/emulated/0';
-      print('$path/Flutter Notes/' +
+      print('$path/Tizeno/' +
           image.path.split('/')[image.path.split('/').length - 1].toString());
-      return '$path/Flutter Notes/' +
+      return '$path/Tizeno/' +
           image.path.split('/')[image.path.split('/').length - 1].toString();
     }
     // String base64Image = image.path;
@@ -688,7 +688,7 @@ class _PhotoPageState extends State<PhotoPage> {
   void addImageToList(File image) async {
     if (_editableNote.id == -1) {
       if (File == null) return;
-      await GallerySaver.saveImage(image.path, albumName: "Flutter Notes");
+      await GallerySaver.saveImage(image.path, albumName: "Tizeno");
       setState(() {
         isSaved = true;
         _hasImages = true;

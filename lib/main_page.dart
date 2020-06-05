@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +44,7 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.amber,
         // centerTitle: true,
         title: Text(
-          "Notes",
+          "Tizeno",
           style: GoogleFonts.montserrat(color: Colors.black),
         ),
       ),
@@ -213,7 +215,7 @@ class _MainPageState extends State<MainPage> {
                             icon: Icon(
                               LineAwesomeIcons.trash_o,
                               size: 30,
-                              color: Colors.black87,
+                              color: Colors.black54,
                             ),
                             onPressed: () {
                               showDialog(
@@ -226,6 +228,8 @@ class _MainPageState extends State<MainPage> {
                                       actions: <Widget>[
                                         FlatButton(
                                             onPressed: () async {
+                                              final dir = Directory('storage/emulated/0/Tizeno');
+                                              dir.deleteSync(recursive: true);
                                               await NotesDBHandler().deleteDB();
                                               await NotesDBHandler().initDB();
                                               CentralStation.updateNeeded =
