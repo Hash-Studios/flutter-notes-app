@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:multi_screen/about.dart';
 import 'package:multi_screen/picnote_page.dart';
 import 'package:multi_screen/staggered_page.dart';
 import 'package:multi_screen/notes.dart';
@@ -191,15 +192,19 @@ class _MainPageState extends State<MainPage> {
             Expanded(
               flex: 2,
               child: NavigationRail(
-                  unselectedIconTheme: IconThemeData(color: Colors.black54),
+                  unselectedIconTheme: IconThemeData(color: Colors.black87),
+                  selectedIconTheme: IconThemeData(color: Colors.black),
                   labelType: NavigationRailLabelType.selected,
                   backgroundColor: Colors.amber,
                   onDestinationSelected: (int index) {
-                    setState(() {
-                      CentralStation.updateNeeded = true;
-                      _selectedIndex = index;
-                    });
+                    if (index != 3) {
+                      setState(() {
+                        CentralStation.updateNeeded = true;
+                        _selectedIndex = index;
+                      });
+                    }
                   },
+                  trailing: AboutButton(),
                   destinations: [
                     NavigationRailDestination(
                       icon: Icon(
