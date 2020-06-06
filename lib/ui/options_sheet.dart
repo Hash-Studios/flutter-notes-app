@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:multi_screen/ui/color_slider.dart';
-import 'package:multi_screen/utility.dart';
+import 'package:multi_screen/data/utility.dart';
 
 enum moreOptions {
   delete,

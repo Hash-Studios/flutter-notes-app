@@ -9,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:multi_screen/data/notes.dart';
 import 'package:multi_screen/data/SqliteHandler.dart';
 import 'package:multi_screen/screens/photoViewer.dart';
-import 'package:multi_screen/utility.dart';
+import 'package:multi_screen/data/utility.dart';
 import 'package:multi_screen/ui/options_sheet.dart';
 // import 'package:flutter_share_content/flutter_share_content.dart';
 import 'package:flutter/services.dart';
