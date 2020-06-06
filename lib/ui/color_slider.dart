@@ -11,39 +11,25 @@ class ColorSlider extends StatefulWidget {
 class _ColorSliderState extends State<ColorSlider> {
   final colors = [
     // Material Colors
-    Color(0xffffffff), // classic white
-    Colors.amber,
-    Colors.blue,
-    Colors.teal,
-    Colors.deepOrange,
+    Color(0xFF666666),
     Colors.blueGrey,
-    Colors.deepPurple,
     Colors.brown,
-    Colors.cyan,
-    Colors.deepOrange,
-    Colors.deepPurple,
-    Colors.green,
-    Colors.grey,
-    Colors.indigo,
-    Colors.lightBlue,
-    Colors.lightGreen,
-    Colors.lime,
-    Colors.orange,
     Colors.pink,
-    Colors.purple,
     Colors.red,
-
-    Color(0xfff28b81), // light pink
-    Color(0xfff7bd02), // yellow
-    Color(0xfffbf476), // light yellow
-    Color(0xffcdff90), // light green
-    Color(0xffa7feeb), // turquoise
-    Color(0xffcbf0f8), // light cyan
-    Color(0xffafcbfa), // light blue
-    Color(0xffd7aefc), // plum
-    Color(0xfffbcfe9), // misty rose
-    Color(0xffe6c9a9), // light brown
-    Color(0xffe9eaee), // light gray
+    Colors.deepOrange,
+    Colors.orange,
+    Colors.amber,
+    Colors.lime,
+    Colors.lightGreen,
+    Colors.green,
+    Colors.cyan,
+    Colors.lightBlue,
+    Colors.blue,
+    Colors.indigo,
+    Colors.purple,
+    Colors.deepPurple,
+    Colors.grey,
+    Color(0xffffffff),
   ];
 
   final Color borderColor = Color(0xffd3d3d3);

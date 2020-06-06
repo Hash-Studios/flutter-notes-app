@@ -383,8 +383,11 @@ class _MainPageState extends State<MainPage> {
           child: IconButton(
             color: Colors.black,
             icon: notesViewType == viewType.List
-                ? FaIcon(FontAwesomeIcons.thLarge)
-                : FaIcon(FontAwesomeIcons.thList),
+                ? FaIcon(
+                    LineAwesomeIcons.copy,
+                    size: 30,
+                  )
+                : FaIcon(LineAwesomeIcons.list, size: 30),
             onPressed: () => _toggleViewType(),
           )
           // InkWell(
