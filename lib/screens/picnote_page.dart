@@ -1,35 +1,61 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:multi_screen/notes.dart';
-import 'package:multi_screen/SqliteHandler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:multi_screen/data/notes.dart';
+import 'package:multi_screen/data/SqliteHandler.dart';
+import 'package:multi_screen/screens/photoViewer.dart';
 import 'package:multi_screen/utility.dart';
-import 'package:multi_screen/options_sheet.dart';
-import 'package:share/share.dart';
+import 'package:multi_screen/ui/options_sheet.dart';
+// import 'package:flutter_share_content/flutter_share_content.dart';
 import 'package:flutter/services.dart';
 
-class NotePage extends StatefulWidget {
+class PhotoPage extends StatefulWidget {
   final Note noteInEditing;
 
-  NotePage(this.noteInEditing);
+  PhotoPage(this.noteInEditing);
 
   @override
-  _NotePageState createState() => _NotePageState();
+  _PhotoPageState createState() => _PhotoPageState();
 }
 
-class _NotePageState extends State<NotePage> {
+class _PhotoPageState extends State<PhotoPage> {
   final _titleController = TextEditingController();
-  final _contentController = TextEditingController();
+  // final _contentController = TextEditingController();
   var noteColor;
   bool _isNewNote = false;
   final _titleFocus = FocusNode();
-  final _contentFocus = FocusNode();
+  bool isSaved = false;
+
+  File _image;
+  final picker = ImagePicker();
+  List<Map<String, dynamic>> _allNotesInQueryResult = [];
+  bool _hasImages;
+
+  List<Widget> images;
+  List<String> imagePaths;
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        addImageToList(_image);
+        imagePaths.add(_image.path);
+      } else {
+        _readyToPop();
+        Navigator.pop(context);
+      }
+    });
+  }
 
   String _titleFrominitial;
   String _contentFromInitial;
-  DateTime _lastEditedForUndo;
+  // DateTime _lastEditedForUndo;
 
   var _editableNote;
 
@@ -40,14 +66,19 @@ class _NotePageState extends State<NotePage> {
 
   @override
   void initState() {
+    images = new List();
+    imagePaths = new List();
     _editableNote = widget.noteInEditing;
     _titleController.text = _editableNote.title;
-    _contentController.text = _editableNote.content;
+    decodeStringToImage(_image, _editableNote.content)
+        .then((value) => _image = value);
     noteColor = _editableNote.noteColor;
-    _lastEditedForUndo = widget.noteInEditing.dateLastEdited;
+    // _lastEditedForUndo = widget.noteInEditing.dateLastEdited;
 
     _titleFrominitial = widget.noteInEditing.title;
     _contentFromInitial = widget.noteInEditing.content;
+
+    _hasImages = false;
     if (widget.noteInEditing.id == -1) {
       _isNewNote = true;
     }
@@ -55,8 +86,61 @@ class _NotePageState extends State<NotePage> {
       // call insert query here
       print("5 seconds passed");
       print("editable note id: ${_editableNote.id}");
-      _persistData();
+      // _persistData();
     });
+
+    if (!_isNewNote) {
+      var noteDB = NotesDBHandler();
+      var _testData = noteDB.selectAllPhotosById(widget.noteInEditing.id);
+      _testData.then((value) {
+        setState(() {
+          this._allNotesInQueryResult = value;
+        });
+        showImagesAdded();
+      });
+    }
+    if (_editableNote.id == -1) {
+      getImage();
+    }
+    if (_editableNote.id == -1) {
+      _photoNote();
+    }
+
+    super.initState();
+  }
+
+  void showImagesAdded() {
+    int len = _allNotesInQueryResult.length;
+    if (len > 0)
+      setState(() {
+        _hasImages = true;
+      });
+    print(
+        String.fromCharCodes(_allNotesInQueryResult[0]["content"]).toString());
+    addImageToList(
+        File(String.fromCharCodes(_allNotesInQueryResult[0]["content"])));
+  }
+
+  Future<String> encodeImageToString(File image) async {
+    // final bytes = await image.readAsBytes();
+    // String base64Image = base64.encode(bytes);
+    if (isSaved) {
+      String path = 'storage/emulated/0';
+      print('$path/Tizeno/' +
+          image.path.split('/')[image.path.split('/').length - 1].toString());
+      return '$path/Tizeno/' +
+          image.path.split('/')[image.path.split('/').length - 1].toString();
+    }
+    // String base64Image = image.path;
+    // return base64Image;
+  }
+
+  Future<File> decodeStringToImage(File image, String base64Image) async {
+    // Uint8List base64Decode = base64.decode(base64Image);
+    // await image.writeAsBytes(base64Decode);
+    image = File(base64Image);
+    print(base64Image);
+    return image;
   }
 
   @override
@@ -135,9 +219,7 @@ class _NotePageState extends State<NotePage> {
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
                       contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                  onChanged: (str) {
-                    updateNoteObject();
-                  },
+                  onChanged: (str) => updateNoteObject(),
                   maxLines: null,
                   controller: _titleController,
                   focusNode: _titleFocus,
@@ -153,36 +235,30 @@ class _NotePageState extends State<NotePage> {
                 color: Colors.black45,
               ),
               Expanded(
-                  child: Container(
-                // margin: EdgeInsets.only(
-                //   bottom: MediaQuery.of(context).viewInsets.bottom + 65,
-                // ),
-                padding: EdgeInsets.only(left: 0, right: 0, top: 12),
-                child: TextField(
-                  autofocus: false,
-                  decoration: InputDecoration(
-                      hintText: "Body",
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.fromLTRB(16, 0, 16, 0)),
-                  onChanged: (str) {
-                    updateNoteObject();
-                  },
-                  maxLines: 99999,
-                  // line limit extendable later
-                  controller: _contentController,
-                  focusNode: _contentFocus,
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                  // backgroundCursorColor: Colors.red,
-                  cursorColor: Colors.blue,
-                ),
-              ))
+                child: Visibility(
+                    maintainState: false,
+                    visible: _hasImages,
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      color: noteColor,
+                      child:
+                          // SingleChildScrollView(
+                          //   scrollDirection: Axis.horizontal,
+                          //   child:
+                          Row(
+                        children: images != null
+                            ? images
+                            : [
+                                Container(
+                                  child: Text("No Images added"),
+                                )
+                              ],
+                      ),
+                      // ),
+                      height: MediaQuery.of(context).size.height * 0.55,
+                      width: MediaQuery.of(context).size.width,
+                    )),
+              ),
             ],
           ),
         ),
@@ -192,20 +268,20 @@ class _NotePageState extends State<NotePage> {
 
   Widget _pageTitle() {
     return Text(
-      _editableNote.id == -1 ? "New Note" : "Edit Note",
+      _editableNote.id == -1 ? "New Note" : "View Note",
       style: GoogleFonts.montserrat(),
     );
   }
 
   List<Widget> _archiveAction(BuildContext context) {
     List<Widget> actions = [];
-    if (widget.noteInEditing.id != -1) {
-      actions.add(IconButton(
-        icon: Icon(Icons.undo),
-        color: Colors.black45,
-        onPressed: () => _undo(),
-      ));
-    }
+    // if (widget.noteInEditing.id != -1) {
+    //   actions.add(IconButton(
+    //     icon: Icon(Icons.undo),
+    //     color: Colors.black45,
+    //     onPressed: () => _undo(),
+    //   ));
+    // }
     actions += [
       IconButton(
         icon: (_editableNote.isArchived == 0)
@@ -253,26 +329,25 @@ class _NotePageState extends State<NotePage> {
   void _persistData() {
     updateNoteObject();
 
-    if (_editableNote.content.isNotEmpty) {
+    if (widget.noteInEditing.title.isNotEmpty) {
       var noteDB = NotesDBHandler();
-
-      if (_editableNote.id == -1) {
+      if (widget.noteInEditing.id == -1) {
         Future<int> autoIncrementedId =
-            noteDB.insertNote(_editableNote, true); // for new note
+            noteDB.insertNote(widget.noteInEditing, true); // for new note
         // set the id of the note from the database after inserting the new note so for next persisting
         autoIncrementedId.then((value) {
-          _editableNote.id = value;
+          widget.noteInEditing.id = value;
         });
       } else {
         noteDB.insertNote(
-            _editableNote, false); // for updating the existing note
+            widget.noteInEditing, false); // for updating the existing note
       }
     }
   }
 
 // this function will ne used to save the updated editing value of the note to the local variables as user types
   void updateNoteObject() {
-    _editableNote.content = _contentController.text;
+    encodeImageToString(_image).then((value) => _editableNote.content = value);
     _editableNote.title = _titleController.text;
     _editableNote.noteColor = noteColor;
     print("new content: ${_editableNote.content}");
@@ -315,7 +390,19 @@ class _NotePageState extends State<NotePage> {
       case moreOptions.share:
         {
           if (_editableNote.content.isNotEmpty) {
-            Share.share("${_editableNote.title}\n${_editableNote.content}");
+            // FlutterShareContent.shareContent(
+            //     imageUrl: '${widget.noteInEditing.content}',
+            //     title: '${widget.noteInEditing.title}',
+            //     msg: '${widget.noteInEditing.title}');
+            // Share.shareFile(
+            //   File('${widget.noteInEditing.content}'),
+            //   subject: '${widget.noteInEditing.title}',
+            //   text: '${widget.noteInEditing.title}',
+            // );
+            // FlutterShareFile.shareImage(
+            //     widget.noteInEditing.content,
+            //     '${widget.noteInEditing.title}.png',
+            //     '${widget.noteInEditing.title}');
           }
           break;
         }
@@ -338,11 +425,15 @@ class _NotePageState extends State<NotePage> {
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
+                      // print(widget.noteInEditing.content);
+                      // final dir = Directory(widget.noteInEditing.content);
+                      // dir.delete(recursive: false);
                       _persistenceTimer.cancel();
                       var noteDB = NotesDBHandler();
                       Navigator.of(context).pop();
                       noteDB.deleteNote(_editableNote);
                       CentralStation.updateNeeded = true;
+                      _hasImages = false;
                       Navigator.of(context).pop();
                     },
                     child: Text("Yes")),
@@ -374,15 +465,6 @@ class _NotePageState extends State<NotePage> {
       noteDB.insertNote(_editableNote, false);
     }
   }
-
-  // void _saveAndStartNewNote(BuildContext context) {
-  //   _persistenceTimer.cancel();
-  //   var emptyNote = new Note(
-  //       -1, "", "", DateTime.now(), DateTime.now(), Colors.white, 0, 0, 0);
-  //   Navigator.of(context).pop();
-  //   Navigator.push(
-  //       context, CupertinoPageRoute(builder: (ctx) => NotePage(emptyNote)));
-  // }
 
   Future<bool> _readyToPop() async {
     _persistenceTimer.cancel();
@@ -439,6 +521,52 @@ class _NotePageState extends State<NotePage> {
     }
   }
 
+  // void _starPopup(BuildContext context) {
+  //   if (_editableNote.isStarred == 0) {
+  //     if (_editableNote.id != -1) {
+  //       showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return AlertDialog(
+  //               title: Text("Confirm ?"),
+  //               content: Text("This note will be starred"),
+  //               actions: <Widget>[
+  //                 FlatButton(
+  //                     onPressed: () => _starThisNote(context),
+  //                     child: Text("Yes")),
+  //                 FlatButton(
+  //                     onPressed: () => Navigator.of(context).pop(),
+  //                     child: Text("No"))
+  //               ],
+  //             );
+  //           });
+  //     } else {
+  //       _exitWithoutSaving(context);
+  //     }
+  //   } else {
+  //     if (_editableNote.id != -1) {
+  //       showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return AlertDialog(
+  //               title: Text("Confirm ?"),
+  //               content: Text("This note will be unstarred"),
+  //               actions: <Widget>[
+  //                 FlatButton(
+  //                     onPressed: () => _unStarThisNote(context),
+  //                     child: Text("Yes")),
+  //                 FlatButton(
+  //                     onPressed: () => Navigator.of(context).pop(),
+  //                     child: Text("No"))
+  //               ],
+  //             );
+  //           });
+  //     } else {
+  //       _exitWithoutSaving(context);
+  //     }
+  //   }
+  // }
+
   void _exitWithoutSaving(BuildContext context) {
     _persistenceTimer.cancel();
     CentralStation.updateNeeded = false;
@@ -454,7 +582,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.archiveNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    // _persistenceTimer.cancel(); // shutdown the timer
+    _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of archive completion
@@ -475,7 +603,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.starNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    // _persistenceTimer.cancel(); // shutdown the timer
+    _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of star completion
@@ -491,7 +619,7 @@ class _NotePageState extends State<NotePage> {
     noteDB.archiveNote(_editableNote);
     // update will be required to remove the archived note from the staggered view
     CentralStation.updateNeeded = true;
-    // _persistenceTimer.cancel(); // shutdown the timer
+    _persistenceTimer.cancel(); // shutdown the timer
 
     // Navigator.of(context).pop(); // pop back to staggered view
     // TODO: OPTIONAL show the toast of unarchive completion
@@ -517,10 +645,28 @@ class _NotePageState extends State<NotePage> {
         content: Text("Unstarred"), duration: Duration(milliseconds: 500)));
   }
 
+  void _photoNote() {
+    // Navigator.of(context).pop();
+    // set archived flag to true and send the entire note object in the database to be updated
+    setState(() {
+      _editableNote.isPhoto = 1;
+    });
+    var noteDB = NotesDBHandler();
+    noteDB.photoNote(_editableNote);
+    // update will be required to remove the archived note from the staggered view
+    CentralStation.updateNeeded = true;
+    // _persistenceTimer.cancel(); // shutdown the timer
+
+    // Navigator.of(context).pop(); // pop back to staggered view
+    // TODO: OPTIONAL show the toast of unstar completion
+    // _globalKey.currentState.showSnackBar(new SnackBar(
+    //     content: Text("Unstarred"), duration: Duration(milliseconds: 500)));
+  }
+
   void _copy() {
     var noteDB = NotesDBHandler();
     Note copy = Note(-1, _editableNote.title, _editableNote.content,
-        DateTime.now(), DateTime.now(), _editableNote.noteColor, 0, 0, 0);
+        DateTime.now(), DateTime.now(), _editableNote.noteColor, 0, 0, 1);
 
     var status = noteDB.copyNote(copy);
     status.then((query_success) {
@@ -531,11 +677,64 @@ class _NotePageState extends State<NotePage> {
     });
   }
 
-  void _undo() {
-    _titleController.text = _titleFrominitial; // widget.noteInEditing.title;
-    _contentController.text =
-        _contentFromInitial; // widget.noteInEditing.content;
-    _editableNote.dateLastEdited =
-        _lastEditedForUndo; // widget.noteInEditing.dateLastEdited;
+  // void _undo() {
+  //   _titleController.text = _titleFrominitial; // widget.noteInEditing.title;
+  //   _contentController.text =
+  //       _contentFromInitial; // widget.noteInEditing.content;
+  //   _editableNote.dateLastEdited =
+  //       _lastEditedForUndo; // widget.noteInEditing.dateLastEdited;
+  // }
+
+  void addImageToList(File image) async {
+    if (_editableNote.id == -1) {
+      if (File == null) return;
+      await GallerySaver.saveImage(image.path, albumName: "Tizeno");
+      setState(() {
+        isSaved = true;
+        _hasImages = true;
+        if (image != null)
+          images.add(Container(
+            width: 720.w,
+            child: InkWell(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PhotoViewer(image: image))),
+              child: image != null
+                  ? Ink(
+                      child: Hero(
+                        tag: "image",
+                        child: Image.file(
+                          image,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                    )
+                  : Text("Not Selected"),
+            ),
+          ));
+      });
+    } else {
+      images.add(
+        Container(
+          width: 720.w,
+          child: InkWell(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhotoViewer(image: image))),
+            child: Ink(
+              child: Hero(
+                tag: "image",
+                child: Image.file(
+                  image,
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

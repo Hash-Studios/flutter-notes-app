@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:multi_screen/notes.dart';
-import 'package:multi_screen/SqliteHandler.dart';
+import 'package:multi_screen/data/notes.dart';
+import 'package:multi_screen/data/SqliteHandler.dart';
 import 'package:multi_screen/utility.dart';
 import 'package:multi_screen/staggered_tile.dart';
-import 'package:multi_screen/main_page.dart';
+import 'package:multi_screen/screens/main_page.dart';
 
 class StaggeredGridPage extends StatefulWidget {
   final notesViewType;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:multi_screen/color_slider.dart';
+import 'package:multi_screen/ui/color_slider.dart';
 import 'package:multi_screen/utility.dart';
 
 enum moreOptions {

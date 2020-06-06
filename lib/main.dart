@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:multi_screen/main_page.dart';
+import 'package:multi_screen/screens/main_page.dart';
 import 'package:flutter/rendering.dart';
 
 void main() {
