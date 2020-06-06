@@ -1,0 +1,63 @@
+name:  Analyze, build and deploy a release
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.17.0'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter analyze
+  
+  drive_android:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        api-level: [21, 29]
+        target: [default]
+    needs: test
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.17.0'
+          channel: 'stable'
+      - name: Run Flutter Driver tests
+        uses: reactivecircus/android-emulator-runner@v1
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: x86_64
+          profile: Nexus 6
+          script: flutter drive --target=test_driver/app.dart
+
+  pre-release:
+    if: github.event_name != 'pull_request'
+    name: "Build and deploy pre-release"
+    runs-on: windows-latest
+    needs: [drive_android,test]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.17.0'
+          channel: 'stable'
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - run: flutter pub get
+      - run: flutter build apk --split-per-abi
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            build/app/outputs/apk/release/*.apk
