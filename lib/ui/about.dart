@@ -36,7 +36,7 @@ class AboutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: new Text("Tizeno v1.0.2"),
+      title: new Text("Tizeno v1.0.3"),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
