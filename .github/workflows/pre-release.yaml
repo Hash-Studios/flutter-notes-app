@@ -1,4 +1,4 @@
-name:  Analyze, build and deploy
+name:  Analyze, build and deploy a pre-release
 on:
   push:
     tags:
@@ -43,27 +43,6 @@ jobs:
           profile: Nexus 6
           script: flutter drive --target=test_driver/app.dart
 
-#   build_deploy:
-#     if: github.event_name != 'pull_request'
-#     runs-on: windows-latest
-#     needs: [drive_android,test]
-#     name: Build Release APK File
-#     steps:
-#       - uses: actions/checkout@v1
-#       - uses: subosito/flutter-action@v1
-#         with:
-#           flutter-version: '1.17.0'
-#           channel: 'stable'
-#       - uses: actions/setup-java@v1
-#         with:
-#           java-version: '12.x'
-#       - run: flutter pub get
-#       - run: flutter build apk --split-per-abi
-#       - name: Create a Release APK and Windows Destop App
-#         uses: ncipollo/release-action@v1
-#         with:
-#           artifacts: "build/app/outputs/apk/release/*.apk"
-#           token: ${{ secrets.GITHUB_TOKEN }}
   pre-release:
     if: github.event_name != 'pull_request'
     name: "Build and deploy pre-release"
