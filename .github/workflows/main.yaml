@@ -1,5 +1,13 @@
 name:  Analyze, build and deploy
-on: [push,pull_request]
+on:
+  push:
+    tags:
+    - '*'
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 jobs:
 
   test:
