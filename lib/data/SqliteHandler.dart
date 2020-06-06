@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'dart:async';
-import 'package:multi_screen/data/notes.dart';
+import 'package:tizeno/data/notes.dart';
 
 class NotesDBHandler {
   final databaseName = "notes.db";

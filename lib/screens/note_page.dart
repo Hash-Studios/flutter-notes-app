@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:multi_screen/data/notes.dart';
-import 'package:multi_screen/data/SqliteHandler.dart';
-import 'package:multi_screen/data/utility.dart';
-import 'package:multi_screen/ui/options_sheet.dart';
+import 'package:tizeno/data/notes.dart';
+import 'package:tizeno/data/SqliteHandler.dart';
+import 'package:tizeno/data/utility.dart';
+import 'package:tizeno/ui/options_sheet.dart';
 import 'package:share/share.dart';
 import 'package:flutter/services.dart';
 
@@ -92,6 +92,7 @@ class _NotePageState extends State<NotePage> {
               // ],
               borderRadius: BorderRadius.circular(100)),
           child: FloatingActionButton(
+            key: Key('Done'),
             heroTag: 'FAB',
             elevation: 0,
             onPressed: () {
@@ -159,6 +160,7 @@ class _NotePageState extends State<NotePage> {
                 // ),
                 padding: EdgeInsets.only(left: 0, right: 0, top: 12),
                 child: TextField(
+                  key: Key('BodyText'),
                   autofocus: false,
                   decoration: InputDecoration(
                       hintText: "Body",

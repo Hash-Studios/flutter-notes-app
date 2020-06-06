@@ -103,6 +103,7 @@ class AboutDialog extends StatelessWidget {
         //   },
         // ),
         CupertinoDialogAction(
+          key: Key('BackButton'),
           isDestructiveAction: true,
           child: Text("Back"),
           onPressed: () {

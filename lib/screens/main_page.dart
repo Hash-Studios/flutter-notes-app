@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:multi_screen/ui/about.dart';
-import 'package:multi_screen/screens/picnote_page.dart';
-import 'package:multi_screen/ui/staggered_page.dart';
-import 'package:multi_screen/data/notes.dart';
-import 'package:multi_screen/screens/note_page.dart';
-import 'package:multi_screen/data/utility.dart';
+import 'package:tizeno/ui/about.dart';
+import 'package:tizeno/screens/picnote_page.dart';
+import 'package:tizeno/ui/staggered_page.dart';
+import 'package:tizeno/data/notes.dart';
+import 'package:tizeno/screens/note_page.dart';
+import 'package:tizeno/data/utility.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
-import 'package:multi_screen/data/SqliteHandler.dart';
+import 'package:tizeno/data/SqliteHandler.dart';
 
 enum viewType { List, Staggered }
 
@@ -69,6 +69,7 @@ class _MainPageState extends State<MainPage> {
                     width: 80,
                     child: FlatButton(
                       padding: EdgeInsets.fromLTRB(5, 14, 0, 14),
+                      key: Key('NewNote'),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(100),
@@ -228,7 +229,8 @@ class _MainPageState extends State<MainPage> {
                                       actions: <Widget>[
                                         FlatButton(
                                             onPressed: () async {
-                                              final dir = Directory('storage/emulated/0/Tizeno');
+                                              final dir = Directory(
+                                                  'storage/emulated/0/Tizeno');
                                               dir.deleteSync(recursive: true);
                                               await NotesDBHandler().deleteDB();
                                               await NotesDBHandler().initDB();

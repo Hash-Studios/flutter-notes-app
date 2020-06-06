@@ -6,11 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_screen/data/notes.dart';
-import 'package:multi_screen/data/SqliteHandler.dart';
-import 'package:multi_screen/screens/photoViewer.dart';
-import 'package:multi_screen/data/utility.dart';
-import 'package:multi_screen/ui/options_sheet.dart';
+import 'package:tizeno/data/notes.dart';
+import 'package:tizeno/data/SqliteHandler.dart';
+import 'package:tizeno/screens/photoViewer.dart';
+import 'package:tizeno/data/utility.dart';
+import 'package:tizeno/ui/options_sheet.dart';
 // import 'package:flutter_share_content/flutter_share_content.dart';
 import 'package:flutter/services.dart';
 

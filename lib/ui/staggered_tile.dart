@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:multi_screen/data/notes.dart';
-import 'package:multi_screen/screens/picnote_page.dart';
-import 'package:multi_screen/data/utility.dart';
-import 'package:multi_screen/screens/note_page.dart';
+import 'package:tizeno/data/notes.dart';
+import 'package:tizeno/screens/picnote_page.dart';
+import 'package:tizeno/data/utility.dart';
+import 'package:tizeno/screens/note_page.dart';
 
 class MyStaggeredTile extends StatefulWidget {
   final Note note;

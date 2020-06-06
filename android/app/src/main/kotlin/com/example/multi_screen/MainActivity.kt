@@ -1,4 +1,4 @@
-package com.example.multi_screen
+package com.hash.tizeno
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
