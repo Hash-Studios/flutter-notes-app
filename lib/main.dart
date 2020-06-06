@@ -2,20 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tizeno/screens/main_page.dart';
 import 'package:flutter/rendering.dart';
+import 'package:catcher/catcher_plugin.dart';
 
-void main() {
-  runApp(MyApp());
+main() {
+  CatcherOptions debugOptions =
+      CatcherOptions(DialogReportMode(), [ConsoleHandler()]);
+  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+    EmailManualHandler(["hash.studios.inc@gmail.com"])
+  ]);
+
+  CatcherOptions profileOptions = CatcherOptions(
+    DialogReportMode(),
+    [ConsoleHandler(), ToastHandler()],
+    handlerTimeout: 1000,
+  );
+
+  Catcher.addDefaultErrorWidget(showStacktrace: true);
+  Catcher(MyApp(),
+      debugConfig: debugOptions,
+      releaseConfig: releaseOptions,
+      profileConfig: profileOptions);
+
+  //profile configuration
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: Catcher.navigatorKey,
+      builder: (BuildContext context, Widget widget) {
+        Catcher.addDefaultErrorWidget(
+            showStacktrace: true,
+            title: "Crash",
+            description: "Something went wrong!",
+            maxWidthForSmallMode: 150);
+        return widget;
+      },
       debugShowCheckedModeBanner: false,
-      // title: 'Flutter Demo',
       theme: ThemeData(
-        // fontFamily: "Roboto",
         iconTheme: IconThemeData(color: Colors.orange),
         textTheme: GoogleFonts.montserratTextTheme(),
         primaryTextTheme: TextTheme(
