@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_screen/theme_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
@@ -30,16 +28,11 @@ class AboutButton extends StatelessWidget {
   }
 }
 
-class AboutDialog extends StatefulWidget {
+class AboutDialog extends StatelessWidget {
   const AboutDialog({
     Key key,
   }) : super(key: key);
 
-  @override
-  _AboutDialogState createState() => _AboutDialogState();
-}
-
-class _AboutDialogState extends State<AboutDialog> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
@@ -94,15 +87,11 @@ class _AboutDialogState extends State<AboutDialog> {
       ),
       actions: <Widget>[
         CupertinoDialogAction(
-          child: Text("Theme"),
+          child: Text("Github"),
           onPressed: () {
             Navigator.of(context).pop();
-            final themeProvider = Provider.of<DynamicTheme>(context);
-            setState(() {
-              themeProvider.changeDarkMode(themeProvider.getDarkMode());
-            });
-            // String link = "https://www.github.com/Hash-Studios";
-            // _launchURL(link);
+            String link = "https://www.github.com/Hash-Studios";
+            _launchURL(link);
           },
         ),
         // CupertinoDialogAction(
