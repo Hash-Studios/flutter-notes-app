@@ -217,7 +217,7 @@ class _MainPageState extends State<MainPage> {
                             icon: Icon(
                               LineAwesomeIcons.trash_o,
                               size: 30,
-                              color: Colors.black54,
+                              color: Colors.black87,
                             ),
                             onPressed: () {
                               showDialog(
@@ -387,8 +387,13 @@ class _MainPageState extends State<MainPage> {
                 ? FaIcon(
                     LineAwesomeIcons.copy,
                     size: 30,
+                    color: Colors.black87,
                   )
-                : FaIcon(LineAwesomeIcons.list, size: 30),
+                : FaIcon(
+                    LineAwesomeIcons.list,
+                    size: 30,
+                    color: Colors.black87,
+                  ),
             onPressed: () => _toggleViewType(),
           )
           // InkWell(

@@ -21,7 +21,7 @@ class AboutButton extends StatelessWidget {
               builder: (BuildContext context) => AboutDialog());
         },
         icon: FaIcon(LineAwesomeIcons.info_circle),
-        color: Colors.black54,
+        color: Colors.black87,
         iconSize: 30,
       ),
     );
