@@ -1,4 +1,4 @@
-# <img src="android/app/src/main/res/mipmap-xxhdpi/launcher_icon.png" alt="icon" width=30> Tizeno
+# <img src="android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" alt="icon" width=30> Tizeno
 
 Tizeno is a beautiful open-source notes app for Android. It is built with Dart on top of Google's Flutter Framework.
 
@@ -8,6 +8,7 @@ Tizeno is a beautiful open-source notes app for Android. It is built with Dart o
 ![Release](https://img.shields.io/github/v/release/Hash-Studios/flutter-notes-app)
 ![License](https://img.shields.io/github/license/Hash-Studios/flutter-notes-app)
 ![Stars](https://img.shields.io/github/stars/Hash-Studios/flutter-notes-app)
+![Build Status](https://github.com/Hash-Studios/flutter-notes-app/workflows/Analyze,%20build%20and%20deploy/badge.svg)
 
 
 ![Tizeno UI Mockup](demo/Tizeno_Mockup.jpg)
@@ -84,9 +85,9 @@ More details about these can be found in the [`pubspec.yaml`](https://github.com
 ## Usage
 
 The application files for Android devices can be found under the [`release`](https://github.com/Hash-Studios/flutter-notes-app/releases) section.
-- [`app-arm64-v8a-release`](/bin/app-arm64-v8a-release.apk) For most users, this will work. It is for ARM x64 based devices.
-- [`app-armeabi-v7a-release`](/bin/app-armeabi-v7a-release.apk) It is for ARM-based devices.
-- [`app-x86_64-release`](/bin/app-x86_64-release.apk) It is for x86 based devices.
+- [`app-arm64-v8a-release`](https://github.com/Hash-Studios/flutter-notes-app/releases/download/latest/app-arm64-v8a-release.apk) For most users, this will work. It is for ARM x64 based devices.
+- [`app-armeabi-v7a-release`](https://github.com/Hash-Studios/flutter-notes-app/releases/download/latest/app-armeabi-v7a-release.apk) It is for ARM-based devices.
+- [`app-x86_64-release`](https://github.com/Hash-Studios/flutter-notes-app/releases/download/latest/app-x86_64-release.apk) It is for x86 based devices.
 <!-- 
 More information about the releases can be found in the [Release](https://github.com/Hash-Studios/flutter-notes-app/releases) tab. -->
 
