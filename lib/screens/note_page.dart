@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multi_screen/data/notes.dart';
 import 'package:multi_screen/data/SqliteHandler.dart';
-import 'package:multi_screen/utility.dart';
+import 'package:multi_screen/data/utility.dart';
 import 'package:multi_screen/ui/options_sheet.dart';
 import 'package:share/share.dart';
 import 'package:flutter/services.dart';
