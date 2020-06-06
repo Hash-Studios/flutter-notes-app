@@ -45,37 +45,40 @@ class AboutDialog extends StatelessWidget {
               child: Text("Developed and Maintained by")),
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-            child: Material(
-              elevation: 0,
-              color: Colors.white54,
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: new ListTile(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  String link = "https://www.github.com/Hash-Studios";
-                  _launchURL(link);
-                },
-                leading: Container(
-                    padding: EdgeInsets.only(right: 12.0),
-                    decoration: new BoxDecoration(
-                      border: new Border(
-                        right:
-                            new BorderSide(width: 1.0, color: Colors.white54),
+              child: Material(
+                elevation: 0,
+                color: Colors.white54,
+                borderRadius: BorderRadius.circular(20),
+                child: new ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    String link = "https://www.github.com/Hash-Studios";
+                    _launchURL(link);
+                  },
+                  leading: Container(
+                      padding: EdgeInsets.only(right: 12.0),
+                      decoration: new BoxDecoration(
+                        border: new Border(
+                          right:
+                              new BorderSide(width: 1.0, color: Colors.white54),
+                        ),
                       ),
-                    ),
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage("assets/images/dev.png"),
-                    )),
-                title: Text(
-                  "Hash Studios",
-                  key: Key('DevName'),
-                  style: TextStyle(
-                      color: Colors.black87, fontWeight: FontWeight.bold),
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage("assets/images/dev.png"),
+                      )),
+                  title: Text(
+                    "Hash Studios",
+                    key: Key('DevName'),
+                    style: TextStyle(
+                        color: Colors.black87, fontWeight: FontWeight.bold),
+                  ),
+                  // subtitle: Text(
+                  //   "",
+                  //   style: TextStyle(color: Colors.black87),
+                  // ),
                 ),
-                // subtitle: Text(
-                //   "",
-                //   style: TextStyle(color: Colors.black87),
-                // ),
               ),
             ),
           ),

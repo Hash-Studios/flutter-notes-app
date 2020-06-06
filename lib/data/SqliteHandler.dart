@@ -74,23 +74,26 @@ class NotesDBHandler {
   Future<int> insertNote(Note note, bool isNew) async {
     final Database db = await database;
     print("insert called");
+    try {
+      await db.insert(
+        'notes',
+        isNew ? note.toMap(false) : note.toMap(true),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
 
-    await db.insert(
-      'notes',
-      isNew ? note.toMap(false) : note.toMap(true),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-
-    if (isNew) {
-      var one = await db.query("notes",
-          orderBy: "dateLastEdited desc",
-          where: "isArchived = ?",
-          whereArgs: [0],
-          limit: 1);
-      int latestId = one.first["id"] as int;
-      return latestId;
+      if (isNew) {
+        var one = await db.query("notes",
+            orderBy: "dateLastEdited desc",
+            where: "isArchived = ?",
+            whereArgs: [0],
+            limit: 1);
+        int latestId = one.first["id"] as int;
+        return latestId;
+      }
+      return note.id;
+    } catch (e) {
+      print(e);
     }
-    return note.id;
   }
 
   Future<bool> copyNote(Note note) async {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tizeno/ui/about.dart';
 import 'package:tizeno/screens/picnote_page.dart';
@@ -225,7 +226,7 @@ class _MainPageState extends State<MainPage> {
                                     return AlertDialog(
                                       title: Text("Confirm ?"),
                                       content: Text(
-                                          "All notes will be deleted permanently"),
+                                          "All notes will be deleted permanently and the app will quit."),
                                       actions: <Widget>[
                                         FlatButton(
                                             onPressed: () async {
@@ -236,7 +237,7 @@ class _MainPageState extends State<MainPage> {
                                               await NotesDBHandler().initDB();
                                               CentralStation.updateNeeded =
                                                   true;
-                                              Navigator.of(context).pop();
+                                              SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                                             },
                                             child: Text("Yes")),
                                         FlatButton(

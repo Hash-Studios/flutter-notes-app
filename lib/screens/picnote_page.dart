@@ -11,6 +11,8 @@ import 'package:tizeno/data/SqliteHandler.dart';
 import 'package:tizeno/screens/photoViewer.dart';
 import 'package:tizeno/data/utility.dart';
 import 'package:tizeno/ui/options_sheet.dart';
+// import 'package:image/image.dart' as Img;
+// import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_share_content/flutter_share_content.dart';
 import 'package:flutter/services.dart';
 
@@ -688,7 +690,15 @@ class _PhotoPageState extends State<PhotoPage> {
   void addImageToList(File image) async {
     if (_editableNote.id == -1) {
       if (File == null) return;
+      // Img.Image img = Img.decodeImage(image.readAsBytesSync());
+      // Img.Image thumbnail = Img.copyResize(img, width: 400);
       await GallerySaver.saveImage(image.path, albumName: "Tizeno");
+      // Directory tempDir = await getTemporaryDirectory();
+      // String tempPath = tempDir.path;
+      // File(tempPath + 'thumbnail.png')
+      //   ..writeAsBytesSync(Img.encodePng(thumbnail));
+      // File resizedImg = File(String.fromCharCodes(
+      //     File(tempPath + 'thumbnail.png').readAsBytesSync()));
       setState(() {
         isSaved = true;
         _hasImages = true;
@@ -715,6 +725,14 @@ class _PhotoPageState extends State<PhotoPage> {
           ));
       });
     } else {
+      // Img.Image img = Img.decodeImage(image.readAsBytesSync());
+      // Img.Image thumbnail = Img.copyResize(img, width: 400);
+      // Directory tempDir = await getTemporaryDirectory();
+      // String tempPath = tempDir.path;
+      // File(tempPath + 'thumbnail.png')
+      //   ..writeAsBytesSync(Img.encodePng(thumbnail));
+      // File resizedImg = File(String.fromCharCodes(
+      //     File(tempPath + 'thumbnail.png').readAsBytesSync()));
       images.add(
         Container(
           width: 720.w,
