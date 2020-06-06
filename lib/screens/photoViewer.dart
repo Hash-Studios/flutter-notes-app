@@ -4,7 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:flutter/material.dart';
 
 class PhotoViewer extends StatefulWidget {
-  File image;
+  final File image;
   PhotoViewer({@required this.image});
   @override
   _PhotoViewerState createState() => _PhotoViewerState();
